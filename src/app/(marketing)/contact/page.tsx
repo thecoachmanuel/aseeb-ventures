@@ -72,6 +72,8 @@ export default function ContactPage() {
             {/* Contact info */}
             <div className="space-y-8">
               {[
+                { country: "Nigeria", city: "Ibadan", phone: "+234 803 978 4205", email: "info@aseeb-ventures.vercel.app" },
+                { country: "Zambia", city: "Lusaka", phone: "+260 97 742 2250", email: "info@aseeb-ventures.vercel.app" },
               ].map((loc) => (
                 <div key={loc.country} className="bg-crop-gray p-6 rounded-xl">
                   <h3 className="font-bold text-lg text-crop-green">{loc.country} — {loc.city}</h3>
