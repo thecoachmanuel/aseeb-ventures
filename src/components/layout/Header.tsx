@@ -111,6 +111,7 @@ export function Header() {
   const [user, setUser] = useState<{ name: string; role: string } | null>(null);
   const [userLoaded, setUserLoaded] = useState(false);
   const megaTimeout = useRef<NodeJS.Timeout | null>(null);
+  const megaPanelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -135,8 +136,18 @@ export function Header() {
   };
 
   const handleMegaLeave = () => {
-    megaTimeout.current = setTimeout(() => setActiveMegaMenu(null), 200);
+    megaTimeout.current = setTimeout(() => setActiveMegaMenu(null), 300);
   };
+
+  const handlePanelEnter = () => {
+    if (megaTimeout.current) clearTimeout(megaTimeout.current);
+  };
+
+  const handlePanelLeave = () => {
+    megaTimeout.current = setTimeout(() => setActiveMegaMenu(null), 300);
+  };
+
+  const activeMegaItem = menuItems.find((item) => item.id === activeMegaMenu);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -192,47 +203,19 @@ export function Header() {
                 <div
                   key={item.id}
                   className="relative"
-                  onMouseEnter={() => item.hasMega && handleMegaEnter(item.id)}
+                  onMouseEnter={() => item.hasMega ? handleMegaEnter(item.id) : setActiveMegaMenu(null)}
                   onMouseLeave={() => item.hasMega && handleMegaLeave()}
                 >
                   <Link
                     href={item.href}
                     className={cn(
                       "px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#009050] transition-colors rounded-md",
-                      item.id === "home" && "text-[#009050]"
+                      item.id === "home" && "text-[#009050]",
+                      activeMegaMenu === item.id && "text-[#009050]"
                     )}
                   >
                     {item.label}
                   </Link>
-
-                  {item.hasMega && activeMegaMenu === item.id && (
-                    <div
-                      className="absolute left-0 top-full mt-0 w-[720px] bg-[#009050] text-white rounded-xl shadow-2xl p-8 z-50"
-                      onMouseEnter={() => handleMegaEnter(item.id)}
-                      onMouseLeave={handleMegaLeave}
-                    >
-                      <div className={cn(
-                        "grid gap-6",
-                        item.id === "articles" ? "grid-cols-3" : "grid-cols-3"
-                      )}>
-                        {item.megaContent?.map((sub, idx) => (
-                          <Link
-                            key={idx}
-                            href={sub.href}
-                            className="group flex gap-4 p-3 rounded-lg hover:bg-white/10 transition-colors"
-                          >
-                            <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                              <img src={sub.icon} alt="" className="w-7 h-7" />
-                            </div>
-                            <div className="min-w-0">
-                              <h4 className="font-semibold text-sm mb-1">{sub.title}</h4>
-                              <p className="text-xs text-white/70 leading-relaxed">{sub.description}</p>
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               ))}
             </nav>
@@ -280,9 +263,38 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mega menu overlay */}
-        {activeMegaMenu && (
-          <div className="fixed inset-0 bg-black/20 z-40" onClick={() => setActiveMegaMenu(null)} />
+        {/* Full-width mega menu panel */}
+        {activeMegaMenu && activeMegaItem?.megaContent && (
+          <div
+            ref={megaPanelRef}
+            className="bg-[#009050] text-white border-t border-white/10"
+            onMouseEnter={handlePanelEnter}
+            onMouseLeave={handlePanelLeave}
+          >
+            <div className="max-w-7xl mx-auto px-4 py-8">
+              <div className={cn(
+                "grid gap-6",
+                activeMegaItem.id === "articles" ? "grid-cols-3" : "grid-cols-3"
+              )}>
+                {activeMegaItem.megaContent.map((sub, idx) => (
+                  <Link
+                    key={idx}
+                    href={sub.href}
+                    onClick={() => setActiveMegaMenu(null)}
+                    className="group flex gap-4 p-3 rounded-lg hover:bg-white/10 transition-colors"
+                  >
+                    <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                      <img src={sub.icon} alt="" className="w-7 h-7" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="font-semibold text-sm mb-1">{sub.title}</h4>
+                      <p className="text-xs text-white/70 leading-relaxed">{sub.description}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Search overlay */}
