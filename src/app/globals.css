@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-crop-green: #009050;
+  --color-crop-green-dark: #007a40;
+  --color-crop-dark: #1a1a1a;
+  --color-crop-gray: #f5f5f5;
+  --color-crop-text: #333333;
+}
+
+@layer base {
+  body {
+    @apply text-[#333333];
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+}
+
+@layer components {
+  .banner_cta {
+    @apply inline-flex items-center gap-2 bg-[#009050] text-white px-6 py-3 rounded-lg font-semibold text-sm hover:bg-[#007a40] transition-colors;
+  }
+  .banner_cta_outline {
+    @apply inline-flex items-center gap-2 border-2 border-white text-white px-6 py-3 rounded-lg font-semibold text-sm hover:bg-white hover:text-[#009050] transition-colors;
+  }
+  .section {
+    @apply py-16 lg:py-24;
+  }
+}
