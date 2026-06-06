@@ -400,6 +400,3 @@ export function Header() {
     </>
   );
 }
-  </>
-  );
-}
