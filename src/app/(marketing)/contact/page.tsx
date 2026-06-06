@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function ContactPage() {
   return (
     <>
-      <section className="relative h-64 lg:h-80 bg-gray-800">
+      <section className="relative h-64 lg:h-80 bg-cover bg-center" style={{ backgroundImage: "url('/images/banners/contact-banner.jpg')" }}>
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative h-full flex items-center justify-center">
           <h1 className="text-3xl lg:text-5xl font-bold text-white">Contact Us</h1>
@@ -72,7 +72,6 @@ export default function ContactPage() {
             {/* Contact info */}
             <div className="space-y-8">
               {[
-                { country: "Nigeria", city: "Ibadan", address: "Aseeb Ventures, Shop 21 Lagelu Shopping Complex, Opposite Dizengoff Monatan, Ibadan", phone: "+234 805 165 347, +234 915 772 8554", email: "aseebventure1@gmail.com" },
               ].map((loc) => (
                 <div key={loc.country} className="bg-crop-gray p-6 rounded-xl">
                   <h3 className="font-bold text-lg text-crop-green">{loc.country} — {loc.city}</h3>

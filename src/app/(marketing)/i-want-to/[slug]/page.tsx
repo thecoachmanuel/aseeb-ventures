@@ -25,7 +25,7 @@ export default async function IWantToPage({ params }: { params: Promise<{ slug: 
 
   return (
     <>
-      <section className="relative h-64 lg:h-80 bg-gray-800">
+      <section className="relative h-64 lg:h-80 bg-cover bg-center" style={{ backgroundImage: "url('/images/banners/i-want-to-banner.jpg')" }}>
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative h-full flex items-center justify-center">
           <h1 className="text-3xl lg:text-4xl font-bold text-white text-center px-4">{page.title}</h1>

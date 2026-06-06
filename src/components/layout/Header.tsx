@@ -108,8 +108,11 @@ export function Header() {
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [user, setUser] = useState<{ name: string; role: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; role: string; image?: string } | null>(null);
   const [userLoaded, setUserLoaded] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
+  const [mobileExpanded, setMobileExpanded] = useState<Record<string, boolean>>({});
+  const avatarRef = useRef<HTMLDivElement | null>(null);
   const megaTimeout = useRef<NodeJS.Timeout | null>(null);
   const megaPanelRef = useRef<HTMLDivElement | null>(null);
 
@@ -165,6 +168,18 @@ export function Header() {
     return () => { document.body.style.overflow = ""; };
   }, [mobileMenuOpen]);
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (avatarRef.current && !avatarRef.current.contains(e.target as Node)) {
+        setAvatarOpen(false);
+      }
+    };
+    if (avatarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [avatarOpen]);
+
   return (
     <>
       {/* Top bar */}
@@ -194,7 +209,7 @@ export function Header() {
 
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">
-              <img src="/images/logo-1.png" alt="Aseeb Ventures" className="h-10 lg:h-12 w-auto" />
+              <img src="/images/logo-1.png" alt="Aseeb Ventures" className="h-12 lg:h-16 w-auto" />
             </Link>
 
             {/* Desktop nav */}
@@ -233,19 +248,53 @@ export function Header() {
               {!userLoaded ? (
                 <div className="hidden lg:block w-24 h-9" />
               ) : user ? (
-                <div className="hidden lg:flex items-center gap-2">
-                  <Link
-                    href={user.role === "admin" ? "/admin" : "/dashboard"}
-                    className="text-sm font-medium text-gray-700 hover:text-[#009050] transition-colors"
-                  >
-                    {user.name}
-                  </Link>
+                <div className="hidden lg:flex items-center relative" ref={avatarRef}>
                   <button
-                    onClick={handleLogout}
-                    className="text-sm text-gray-500 hover:text-red-600 transition-colors"
+                    onClick={() => setAvatarOpen(!avatarOpen)}
+                    className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
                   >
-                    Logout
+                    {user.image ? (
+                      <img src={user.image} alt={user.name} className="w-8 h-8 rounded-full object-cover border-2 border-[#009050]" />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-[#009050] text-white flex items-center justify-center text-sm font-semibold">
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <span className="text-sm font-medium text-gray-700 hidden xl:inline">{user.name}</span>
+                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
                   </button>
+                  {avatarOpen && (
+                    <div className="absolute right-4 top-full mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+                      <div className="px-4 py-2 border-b border-gray-100">
+                        <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                        <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                      </div>
+                      <Link
+                        href={user.role === "admin" ? "/admin" : "/dashboard"}
+                        onClick={() => setAvatarOpen(false)}
+                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        {user.role === "admin" ? "Admin Panel" : "Dashboard"}
+                      </Link>
+                      <Link
+                        href="/account-settings"
+                        onClick={() => setAvatarOpen(false)}
+                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        Profile
+                      </Link>
+                      <div className="border-t border-gray-100 mt-1 pt-1">
+                        <button
+                          onClick={() => { setAvatarOpen(false); handleLogout(); }}
+                          className="block w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <Link
@@ -337,19 +386,34 @@ export function Header() {
                   <div key={item.id}>
                     {item.hasMega ? (
                       <div>
-                        <div className="px-4 py-3 font-medium text-sm opacity-70 uppercase tracking-wide">{item.label}</div>
-                        <div className="space-y-1 ml-2">
-                          {item.megaContent?.map((sub, idx) => (
-                            <Link
-                              key={idx}
-                              href={sub.href}
-                              onClick={() => setMobileMenuOpen(false)}
-                              className="block px-4 py-2.5 text-sm hover:bg-white/10 rounded-lg"
-                            >
-                              {sub.title}
-                            </Link>
-                          ))}
-                        </div>
+                        <button
+                          onClick={() => setMobileExpanded((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
+                          className="flex items-center justify-between w-full px-4 py-3 font-medium text-sm uppercase tracking-wide hover:bg-white/10 rounded-lg"
+                        >
+                          <span>{item.label}</span>
+                          <svg
+                            className={cn("w-4 h-4 transition-transform", mobileExpanded[item.id] && "rotate-180")}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        {mobileExpanded[item.id] && (
+                          <div className="space-y-1 ml-2 pb-1">
+                            {item.megaContent?.map((sub, idx) => (
+                              <Link
+                                key={idx}
+                                href={sub.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="block px-4 py-2.5 text-sm hover:bg-white/10 rounded-lg"
+                              >
+                                {sub.title}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <Link
@@ -366,12 +430,32 @@ export function Header() {
               <div className="mt-6 px-4">
                 {user ? (
                   <div className="space-y-2">
+                    <div className="flex items-center gap-3 px-2 py-2 mb-2">
+                      {user.image ? (
+                        <img src={user.image} alt={user.name} className="w-10 h-10 rounded-full object-cover border-2 border-white/40" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center font-semibold text-lg">
+                          {user.name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-sm font-medium">{user.name}</p>
+                        <p className="text-xs text-white/70 capitalize">{user.role}</p>
+                      </div>
+                    </div>
                     <Link
                       href={user.role === "admin" ? "/admin" : "/dashboard"}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block w-full text-center bg-white/20 text-white py-3 rounded-lg font-semibold"
+                      className="block w-full text-center bg-white/20 text-white py-2.5 rounded-lg text-sm"
                     >
-                      {user.name}
+                      {user.role === "admin" ? "Admin Panel" : "Dashboard"}
+                    </Link>
+                    <Link
+                      href="/account-settings"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full text-center bg-white/10 text-white py-2.5 rounded-lg text-sm"
+                    >
+                      Profile
                     </Link>
                     <button
                       onClick={() => { handleLogout(); setMobileMenuOpen(false); }}

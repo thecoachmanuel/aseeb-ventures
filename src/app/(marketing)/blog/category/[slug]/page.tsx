@@ -33,7 +33,7 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ s
 
   return (
     <>
-      <section className="relative h-64 lg:h-80 bg-gray-800">
+      <section className="relative h-64 lg:h-80 bg-cover bg-center" style={{ backgroundImage: "url('/images/banners/blog-banner.jpg')" }}>
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative h-full flex items-center justify-center">
           <h1 className="text-3xl lg:text-5xl font-bold text-white">{cat.title}</h1>
@@ -45,7 +45,7 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ s
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {cat.posts.map((post) => (
                 <article key={post.slug} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                  <Link href={`/blog/${post.slug}`}><div className="h-48 bg-gray-200" /></Link>
+                  <Link href={`/blog/${post.slug}`}><div className="h-48 bg-cover bg-center" style={{ backgroundImage: "url('/images/cards/blog-card.jpg')" }} /></Link>
                   <div className="p-5">
                     <div className="flex flex-wrap gap-1 mb-2">
                       {post.tags.slice(0, 2).map((tag) => (

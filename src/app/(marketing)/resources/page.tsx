@@ -5,7 +5,7 @@ export const metadata: Metadata = { title: "Resources" };
 export default function ResourcesPage() {
   return (
     <>
-      <section className="relative h-64 lg:h-80 bg-gray-800">
+      <section className="relative h-64 lg:h-80 bg-cover bg-center" style={{ backgroundImage: "url('/images/banners/resources-banner.jpg')" }}>
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative h-full flex items-center justify-center text-center">
           <div>

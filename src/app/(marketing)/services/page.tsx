@@ -15,12 +15,14 @@ const services = [
   { title: "Agronomy Training", slug: "talk-to-an-agronomist", category: "advisory", desc: "Bringing talent to life. Expert hands-on training from people with over 20 years of experience.", icon: "/icons/advisory_services.svg" },
   { title: "Soil Mapping for Smart Fertilizer Blending", slug: "soil-mapping", category: "agtech", desc: "Fertilisers designed for local soils. Smart fertilizer blending based on comprehensive soil mapping.", icon: "/icons/agTech_services.svg" },
   { title: "Soil Carbon Services", slug: "soil-baseline-carbon-mapping", category: "agtech", desc: "Calculate your soil carbon stocks. Baseline carbon mapping for carbon credit programs.", icon: "/icons/agTech_services.svg" },
+  { title: "Agrochemicals & Equipment Sales", slug: "agrochemicals-equipment-sales", category: "advisory", desc: "Quality agrochemicals, fertilizers, and modern farming equipment to boost your agricultural productivity.", icon: "/icons/advisory_services.svg" },
+  { title: "Techno Consult", slug: "techno-consult", category: "advisory", desc: "Expert technical consulting services for agricultural projects, farm setup, and precision farming operations.", icon: "/icons/advisory_services.svg" },
 ];
 
 export default function ServicesPage() {
   return (
     <>
-      <section className="relative h-64 lg:h-80 bg-gray-800">
+      <section className="relative h-64 lg:h-80 bg-cover bg-center" style={{ backgroundImage: "url('/images/banners/services-banner.jpg')" }}>
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative h-full flex items-center justify-center">
           <h1 className="text-3xl lg:text-5xl font-bold text-white">Our Services</h1>

@@ -11,7 +11,7 @@ const stories = [
 export default function SuccessStoriesPage() {
   return (
     <>
-      <section className="relative h-64 lg:h-80 bg-gray-800">
+      <section className="relative h-64 lg:h-80 bg-cover bg-center" style={{ backgroundImage: "url('/images/banners/success-banner.jpg')" }}>
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative h-full flex items-center justify-center">
           <h1 className="text-3xl lg:text-5xl font-bold text-white">Success Stories</h1>
@@ -23,7 +23,7 @@ export default function SuccessStoriesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {stories.map((story) => (
               <Link key={story.slug} href={`/success-stories/${story.slug}`} className="group bg-crop-gray rounded-2xl overflow-hidden hover:shadow-lg transition-all">
-                <div className="h-48 bg-gray-300 bg-cover bg-center" />
+                <div className="h-48 bg-cover bg-center" style={{ backgroundImage: "url('/images/cards/success-card.jpg')" }} />
                 <div className="p-6">
                   <div className="flex gap-3 text-xs text-crop-green font-medium mb-2">
                     {story.location && <span>{story.location}</span>}

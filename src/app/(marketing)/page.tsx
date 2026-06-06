@@ -251,7 +251,7 @@ export default function HomePage() {
             <div>
               <h3 className="text-2xl lg:text-3xl font-bold mb-4">Our Laboratory is Internationally Accredited</h3>
               <p className="text-gray-300 leading-relaxed mb-6">
-                Aseeb Ventures is ISO/IEC 17025 accredited by the Kenya Accreditation Service (KENAS). ISO/IEC 17025 accreditation fulfills the general competence requirements for testing and calibration laboratories and demonstrates our ability to carry out laboratory testing and calibration to an international standard.
+                Aseeb Ventures is accredited and fulfills the general competence requirements for testing and calibration laboratories and demonstrates our ability to carry out laboratory testing and calibration to an international standard.
               </p>
               <Link href="/services/laboratory-services" className="banner_cta_outline">
                 READ MORE

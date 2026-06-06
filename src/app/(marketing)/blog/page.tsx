@@ -14,7 +14,7 @@ const categories = ["Agronomy Articles", "How to Videos", "Library", "News", "Nu
 export default function BlogPage() {
   return (
     <>
-      <section className="relative h-64 lg:h-80 bg-gray-800">
+      <section className="relative h-64 lg:h-80 bg-cover bg-center" style={{ backgroundImage: "url('/images/banners/blog-banner.jpg')" }}>
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative h-full flex items-center justify-center text-center">
           <div>
@@ -39,7 +39,7 @@ export default function BlogPage() {
             {posts.map((post) => (
               <article key={post.slug} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                 <Link href={`/blog/${post.slug}`}>
-                  <div className="h-48 bg-gray-200 bg-cover bg-center" />
+                  <div className="h-48 bg-cover bg-center" style={{ backgroundImage: "url('/images/cards/blog-card.jpg')" }} />
                 </Link>
                 <div className="p-5">
                   <div className="flex flex-wrap gap-1 mb-2">

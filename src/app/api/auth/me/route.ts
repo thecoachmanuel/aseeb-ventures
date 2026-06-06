@@ -8,7 +8,17 @@ export async function GET() {
   if (!session) {
     return NextResponse.json({ user: null });
   }
-  return NextResponse.json({ user: session });
+  try {
+    await connectDB();
+    const dbUser = await User.findById(session.id).select("name email role image company phone").lean();
+    return NextResponse.json({
+      user: dbUser
+        ? { id: dbUser._id.toString(), email: dbUser.email, name: dbUser.name, role: dbUser.role, image: dbUser.image }
+        : session,
+    });
+  } catch {
+    return NextResponse.json({ user: session });
+  }
 }
 
 export async function PUT(request: Request) {
