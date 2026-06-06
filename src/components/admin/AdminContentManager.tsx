@@ -2,8 +2,162 @@
 
 import { useState, useEffect } from "react";
 
+type ResourceName =
+  | "services" | "blog" | "contacts" | "testimonials" | "stories" | "subscribers"
+  | "users" | "siteconfig" | "navigation" | "locations" | "heroslides"
+  | "pillars" | "stats" | "nutrients" | "resources" | "legalpages" | "iwantto";
+
+interface FormField {
+  name: string;
+  label: string;
+  type: "text" | "textarea" | "select" | "url";
+  rows?: number;
+  required?: boolean;
+  options?: { value: string; label: string }[];
+  placeholder?: string;
+  defaultValue?: string;
+}
+
+const formFields: Record<ResourceName, FormField[]> = {
+  services: [
+    { name: "name", label: "Name", type: "text", required: true },
+    { name: "slug", label: "Slug", type: "text", required: true },
+    { name: "category", label: "Category", type: "select", options: [
+      { value: "laboratory", label: "Laboratory" },
+      { value: "advisory", label: "Advisory" },
+      { value: "agtech", label: "AgTech" },
+      { value: "i-want-to", label: "I Want To" },
+    ]},
+    { name: "shortDescription", label: "Short Description", type: "textarea", rows: 2, required: true },
+    { name: "description", label: "Full Description", type: "textarea", rows: 4, required: true },
+    { name: "price", label: "Price", type: "text" },
+    { name: "icon", label: "Icon", type: "text" },
+    { name: "image", label: "Image URL", type: "url" },
+  ],
+  blog: [
+    { name: "title", label: "Title", type: "text", required: true },
+    { name: "slug", label: "Slug", type: "text", required: true },
+    { name: "author", label: "Author", type: "text", required: true, defaultValue: "Aseeb Ventures Team" },
+    { name: "categories", label: "Categories (comma separated)", type: "text" },
+    { name: "tags", label: "Tags (comma separated)", type: "text" },
+    { name: "excerpt", label: "Excerpt", type: "textarea", rows: 2, required: true },
+    { name: "content", label: "Content", type: "textarea", rows: 10, required: true },
+    { name: "featuredImage", label: "Featured Image URL", type: "url" },
+  ],
+  stories: [
+    { name: "title", label: "Title", type: "text", required: true },
+    { name: "slug", label: "Slug", type: "text", required: true },
+    { name: "farmerName", label: "Farmer Name", type: "text" },
+    { name: "location", label: "Location", type: "text" },
+    { name: "crop", label: "Crop", type: "text" },
+    { name: "excerpt", label: "Excerpt", type: "textarea", rows: 2, required: true },
+    { name: "content", label: "Content", type: "textarea", rows: 10, required: true },
+    { name: "image", label: "Image URL", type: "url", required: true },
+    { name: "videoUrl", label: "Video URL", type: "url" },
+  ],
+  testimonials: [
+    { name: "name", label: "Name", type: "text", required: true },
+    { name: "company", label: "Company", type: "text", required: true },
+    { name: "role", label: "Role", type: "text" },
+    { name: "quote", label: "Quote", type: "textarea", rows: 3, required: true },
+    { name: "rating", label: "Rating (1-5)", type: "text" },
+    { name: "image", label: "Image URL", type: "url" },
+  ],
+  heroslides: [
+    { name: "title", label: "Title", type: "text", required: true },
+    { name: "description", label: "Description", type: "textarea", rows: 2, required: true },
+    { name: "image", label: "Image URL", type: "url" },
+    { name: "ctaLabel", label: "CTA Label", type: "text", defaultValue: "READ MORE" },
+    { name: "ctaHref", label: "CTA Link", type: "text", defaultValue: "#" },
+    { name: "order", label: "Order", type: "text", defaultValue: "0" },
+  ],
+  pillars: [
+    { name: "title", label: "Title", type: "text", required: true },
+    { name: "description", label: "Description", type: "textarea", rows: 2, required: true },
+    { name: "image", label: "Image URL", type: "url" },
+    { name: "href", label: "Link", type: "text", required: true },
+    { name: "icon", label: "Icon", type: "text" },
+    { name: "order", label: "Order", type: "text", defaultValue: "0" },
+  ],
+  stats: [
+    { name: "value", label: "Value (e.g. 12,390)", type: "text", required: true },
+    { name: "label", label: "Label (e.g. Corporate Clients)", type: "text", required: true },
+    { name: "order", label: "Order", type: "text", defaultValue: "0" },
+  ],
+  nutrients: [
+    { name: "name", label: "Nutrient Name", type: "text", required: true },
+    { name: "role", label: "Role", type: "textarea", rows: 2, required: true },
+    { name: "deficiency", label: "Deficiency", type: "textarea", rows: 2, required: true },
+    { name: "order", label: "Order", type: "text", defaultValue: "0" },
+  ],
+  resources: [
+    { name: "title", label: "Title", type: "text", required: true },
+    { name: "description", label: "Description", type: "textarea", rows: 2 },
+    { name: "fileUrl", label: "File/Link URL", type: "url", defaultValue: "#" },
+    { name: "fileType", label: "Type", type: "select", options: [
+      { value: "pdf", label: "PDF" }, { value: "image", label: "Image" }, { value: "video", label: "Video" }, { value: "link", label: "Link" },
+    ]},
+    { name: "category", label: "Category", type: "text" },
+    { name: "order", label: "Order", type: "text", defaultValue: "0" },
+  ],
+  legalpages: [
+    { name: "title", label: "Title", type: "text", required: true },
+    { name: "slug", label: "Slug", type: "text", required: true },
+    { name: "content", label: "Content (HTML)", type: "textarea", rows: 15, required: true },
+  ],
+  iwantto: [
+    { name: "label", label: "Label", type: "text", required: true },
+    { name: "href", label: "Link", type: "text", required: true },
+    { name: "description", label: "Description", type: "textarea", rows: 2 },
+    { name: "order", label: "Order", type: "text", defaultValue: "0" },
+  ],
+  navigation: [
+    { name: "label", label: "Label", type: "text", required: true },
+    { name: "href", label: "Link", type: "text", required: true },
+    { name: "icon", label: "Icon Path", type: "text" },
+    { name: "description", label: "Description", type: "textarea", rows: 2 },
+    { name: "hasMega", label: "Has Mega Menu", type: "select", options: [
+      { value: "false", label: "No" }, { value: "true", label: "Yes" },
+    ]},
+    { name: "order", label: "Order", type: "text", defaultValue: "0" },
+  ],
+  locations: [
+    { name: "country", label: "Country", type: "text", required: true },
+    { name: "city", label: "City", type: "text", required: true },
+    { name: "address", label: "Address", type: "textarea", rows: 2 },
+    { name: "phone", label: "Phone", type: "text", required: true },
+    { name: "email", label: "Email", type: "text", required: true },
+    { name: "isMainOffice", label: "Main Office", type: "select", options: [
+      { value: "false", label: "No" }, { value: "true", label: "Yes" },
+    ]},
+    { name: "order", label: "Order", type: "text", defaultValue: "0" },
+  ],
+  siteconfig: [
+    { name: "siteName", label: "Site Name", type: "text", required: true },
+    { name: "logo", label: "Logo Path", type: "text", required: true },
+    { name: "phone", label: "Phone", type: "text", required: true },
+    { name: "email", label: "Email", type: "text", required: true },
+    { name: "address", label: "Address", type: "textarea", rows: 2 },
+    { name: "copyright", label: "Copyright Text", type: "text", required: true },
+    { name: "metaTitle", label: "Meta Title", type: "text" },
+    { name: "metaDescription", label: "Meta Description", type: "textarea", rows: 3 },
+  ],
+  users: [
+    { name: "name", label: "Name", type: "text", required: true },
+    { name: "email", label: "Email", type: "text", required: true },
+    { name: "password", label: "Password (leave blank to keep)", type: "text" },
+    { name: "role", label: "Role", type: "select", options: [
+      { value: "client", label: "Client" }, { value: "admin", label: "Admin" }, { value: "viewer", label: "Viewer" },
+    ]},
+    { name: "phone", label: "Phone", type: "text" },
+    { name: "company", label: "Company", type: "text" },
+  ],
+  contacts: [],
+  subscribers: [],
+};
+
 interface Props {
-  resource: "services" | "blog" | "contacts" | "testimonials" | "stories" | "subscribers";
+  resource: ResourceName;
   title: string;
   canCreate?: boolean;
 }
@@ -18,7 +172,7 @@ export function AdminContentManager({ resource, title, canCreate = true }: Props
     setLoading(true);
     fetch(`/api/admin?resource=${resource}`)
       .then((r) => r.json())
-      .then((d) => { setData(Array.isArray(d) ? d : []); setLoading(false); })
+      .then((d) => { setData(Array.isArray(d) ? d : d ? [d] : []); setLoading(false); })
       .catch(() => { setData([]); setLoading(false); });
   }, [resource]);
 
@@ -38,6 +192,10 @@ export function AdminContentManager({ resource, title, canCreate = true }: Props
     const fd = new FormData(form);
     const formData: Record<string, any> = Object.fromEntries(fd);
 
+    if (resource === "users" && !formData.password) {
+      delete formData.password;
+    }
+
     if (editing) formData.id = editing._id;
 
     const res = await fetch("/api/admin", {
@@ -55,29 +213,44 @@ export function AdminContentManager({ resource, title, canCreate = true }: Props
       setShowForm(false);
       setEditing(null);
       const updated = await fetch(`/api/admin?resource=${resource}`);
-      setData(await updated.json());
+      const json = await updated.json();
+      setData(Array.isArray(json) ? json : json ? [json] : []);
     } else {
       alert("Failed to save");
     }
   };
 
   const getItemTitle = (item: any) => {
-    if (resource === "contacts") return item.email || item.name || "Message";
-    if (resource === "blog") return item.title;
-    if (resource === "testimonials") return item.name;
-    if (resource === "stories") return item.title;
-    if (resource === "subscribers") return item.email;
-    return item.name || item.title || item._id;
+    if (resource === "contacts") return item.name || item.email || "Message";
+    if (resource === "subscribers") return item.email || "Subscriber";
+    if (resource === "users") return `${item.name} (${item.email})`;
+    if (resource === "siteconfig") return item.siteName || "Site Config";
+    if (resource === "navigation") return item.label || "Nav Item";
+    if (resource === "locations") return `${item.country} — ${item.city}`;
+    if (resource === "iwantto") return item.label || "Option";
+    return item.title || item.name || item.label || item._id;
   };
 
   const getItemSubtitle = (item: any) => {
     if (resource === "contacts") return item.message?.substring(0, 80) || "";
     if (resource === "blog") return item.excerpt?.substring(0, 80) || "";
-    if (resource === "testimonials") return item.quote?.substring(0, 80) || "";
     if (resource === "stories") return item.excerpt?.substring(0, 80) || "";
+    if (resource === "services") return item.shortDescription?.substring(0, 80) || "";
+    if (resource === "heroslides") return item.description?.substring(0, 80) || "";
+    if (resource === "pillars") return item.description?.substring(0, 80) || "";
+    if (resource === "nutrients") return item.role?.substring(0, 80) || "";
+    if (resource === "resources") return item.description?.substring(0, 80) || "";
+    if (resource === "testimonials") return item.quote?.substring(0, 80) || "";
+    if (resource === "users") return item.role ? `Role: ${item.role}` : "";
+    if (resource === "navigation") return item.href || "";
+    if (resource === "locations") return item.address?.substring(0, 80) || "";
+    if (resource === "siteconfig") return item.email || "";
     if (resource === "subscribers") return item.createdAt ? `Subscribed ${new Date(item.createdAt).toLocaleDateString()}` : "";
-    return item.shortDescription?.substring(0, 80) || "";
+    return "";
   };
+
+  const fields = formFields[resource] || [];
+  const addLabel = resource === "blog" ? "Post" : resource === "stories" ? "Story" : resource === "users" ? "User" : "Item";
 
   return (
     <div>
@@ -86,82 +259,44 @@ export function AdminContentManager({ resource, title, canCreate = true }: Props
           <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
           <p className="text-sm text-gray-500 mt-1">{data.length} {data.length === 1 ? "item" : "items"}</p>
         </div>
-        {canCreate && (
+        {canCreate && fields.length > 0 && (
           <button
             onClick={() => { setEditing(null); setShowForm(!showForm); }}
             className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
           >
-            {showForm ? "Cancel" : `Add ${resource === "blog" ? "Post" : resource === "stories" ? "Story" : "Item"}`}
+            {showForm ? "Cancel" : `Add ${addLabel}`}
           </button>
         )}
       </div>
 
       {showForm && (
         <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-          <h3 className="font-semibold mb-4">
-            {editing ? "Edit" : "New"} {resource === "blog" ? "Blog Post" : resource === "stories" ? "Success Story" : resource === "services" ? "Service" : "Item"}
-          </h3>
+          <h3 className="font-semibold mb-4">{editing ? "Edit" : "New"} {addLabel}</h3>
           <form onSubmit={handleSave} className="space-y-4">
-            {resource === "services" && (
-              <>
-                <input name="name" placeholder="Name" required defaultValue={editing?.name || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                <input name="slug" placeholder="slug" required defaultValue={editing?.slug || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                <select name="category" defaultValue={editing?.category || "laboratory"} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                  <option value="laboratory">Laboratory</option>
-                  <option value="advisory">Advisory</option>
-                  <option value="agtech">AgTech</option>
-                  <option value="i-want-to">I Want To</option>
-                </select>
-                <textarea name="shortDescription" placeholder="Short description" required defaultValue={editing?.shortDescription || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" rows={2} />
-                <textarea name="description" placeholder="Full description" required defaultValue={editing?.description || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" rows={4} />
-                <div className="flex gap-4">
-                  <input name="price" placeholder="Price (optional)" defaultValue={editing?.price || ""} className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                  <input name="icon" placeholder="Icon path (optional)" defaultValue={editing?.icon || ""} className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                </div>
-              </>
-            )}
-            {resource === "blog" && (
-              <>
-                <input name="title" placeholder="Title" required defaultValue={editing?.title || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                <input name="slug" placeholder="slug" required defaultValue={editing?.slug || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                <input name="author" placeholder="Author" required defaultValue={editing?.author || "Aseeb Ventures Team"} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                <input name="categories" placeholder="Categories (comma separated)" defaultValue={editing?.categories?.join(", ") || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                <textarea name="excerpt" placeholder="Excerpt" required defaultValue={editing?.excerpt || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" rows={2} />
-                <textarea name="content" placeholder="Content" required defaultValue={editing?.content || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" rows={8} />
-                <input name="featuredImage" placeholder="Featured image URL" defaultValue={editing?.featuredImage || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-              </>
-            )}
-            {resource === "testimonials" && (
-              <>
-                <input name="name" placeholder="Name" required defaultValue={editing?.name || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                <input name="company" placeholder="Company" required defaultValue={editing?.company || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                <textarea name="quote" placeholder="Quote" required defaultValue={editing?.quote || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" rows={3} />
-                <input name="role" placeholder="Role (optional)" defaultValue={editing?.role || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-              </>
-            )}
-            {resource === "stories" && (
-              <>
-                <input name="title" placeholder="Title" required defaultValue={editing?.title || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                <input name="slug" placeholder="slug" required defaultValue={editing?.slug || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                <input name="location" placeholder="Location" defaultValue={editing?.location || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                <input name="crop" placeholder="Crop" defaultValue={editing?.crop || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                <textarea name="excerpt" placeholder="Excerpt" required defaultValue={editing?.excerpt || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" rows={2} />
-                <textarea name="content" placeholder="Content" required defaultValue={editing?.content || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" rows={8} />
-                <input name="image" placeholder="Image URL" defaultValue={editing?.image || ""} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-              </>
-            )}
-            <button type="submit" className="bg-emerald-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors">
-              Save
-            </button>
+            {fields.map((field) => {
+              const val = editing?.[field.name] ?? field.defaultValue ?? "";
+              const displayVal = Array.isArray(val) ? val.join(", ") : val;
+              const inputClass = "w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500";
+              if (field.type === "textarea") {
+                return <textarea key={field.name} name={field.name} placeholder={field.placeholder || field.label} required={field.required} defaultValue={String(displayVal)} className={inputClass} rows={field.rows || 3} />;
+              }
+              if (field.type === "select" && field.options) {
+                return (
+                  <select key={field.name} name={field.name} defaultValue={String(displayVal)} className={inputClass}>
+                    {field.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                  </select>
+                );
+              }
+              return <input key={field.name} name={field.name} type="text" placeholder={field.placeholder || field.label} required={field.required} defaultValue={String(displayVal)} className={inputClass} />;
+            })}
+            <button type="submit" className="bg-emerald-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors">Save</button>
           </form>
         </div>
       )}
 
       {loading ? (
         <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse h-16 bg-gray-100 rounded-xl" />
-          ))}
+          {[1, 2, 3].map((i) => <div key={i} className="animate-pulse h-16 bg-gray-100 rounded-xl" />)}
         </div>
       ) : data.length === 0 ? (
         <div className="text-center py-16">
@@ -180,20 +315,10 @@ export function AdminContentManager({ resource, title, canCreate = true }: Props
                   <p className="text-sm text-gray-500 truncate">{getItemSubtitle(item)}</p>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  {resource !== "contacts" && resource !== "subscribers" && (
-                    <button
-                      onClick={() => { setEditing(item); setShowForm(true); }}
-                      className="text-sm text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
-                    >
-                      Edit
-                    </button>
+                  {resource !== "contacts" && resource !== "subscribers" && fields.length > 0 && (
+                    <button onClick={() => { setEditing(item); setShowForm(true); }} className="text-sm text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors">Edit</button>
                   )}
-                  <button
-                    onClick={() => handleDelete(item._id)}
-                    className="text-sm text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors"
-                  >
-                    Delete
-                  </button>
+                  <button onClick={() => handleDelete(item._id)} className="text-sm text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors">Delete</button>
                 </div>
               </div>
             ))}
