@@ -5,6 +5,8 @@ import { Service } from "@/models/Service";
 import { BlogPost } from "@/models/BlogPost";
 import { ContactSubmission } from "@/models/ContactSubmission";
 import { Testimonial } from "@/models/Testimonial";
+import { SuccessStory } from "@/models/SuccessStory";
+import { NewsletterSubscriber } from "@/models/NewsletterSubscriber";
 
 async function requireAdmin() {
   const session = await getServerSession();
@@ -46,13 +48,24 @@ export async function GET(request: NextRequest) {
         const testimonials = await Testimonial.find().sort({ order: 1 }).lean();
         return NextResponse.json(testimonials);
       }
+      case "stories": {
+        const stories = await SuccessStory.find().sort({ createdAt: -1 }).lean();
+        return NextResponse.json(stories);
+      }
+      case "subscribers": {
+        const subscribers = await NewsletterSubscriber.find().sort({ createdAt: -1 }).lean();
+        return NextResponse.json(subscribers);
+      }
       case "stats": {
-        const [serviceCount, blogCount, contactCount] = await Promise.all([
+        const [serviceCount, blogCount, contactCount, testimonialCount, storyCount, subscriberCount] = await Promise.all([
           Service.countDocuments(),
           BlogPost.countDocuments(),
           ContactSubmission.countDocuments(),
+          Testimonial.countDocuments(),
+          SuccessStory.countDocuments(),
+          NewsletterSubscriber.countDocuments(),
         ]);
-        return NextResponse.json({ services: serviceCount, blogPosts: blogCount, contacts: contactCount });
+        return NextResponse.json({ services: serviceCount, blogPosts: blogCount, contacts: contactCount, testimonials: testimonialCount, stories: storyCount, subscribers: subscriberCount });
       }
       default:
         return NextResponse.json({ error: "Invalid resource" }, { status: 400 });
@@ -77,6 +90,8 @@ export async function POST(request: NextRequest) {
         case "blog": await BlogPost.findByIdAndDelete(id); break;
         case "contacts": await ContactSubmission.findByIdAndDelete(id); break;
         case "testimonials": await Testimonial.findByIdAndDelete(id); break;
+        case "stories": await SuccessStory.findByIdAndDelete(id); break;
+        case "subscribers": await NewsletterSubscriber.findByIdAndDelete(id); break;
         default: return NextResponse.json({ error: "Invalid resource" }, { status: 400 });
       }
       return NextResponse.json({ success: true });
@@ -117,6 +132,11 @@ export async function POST(request: NextRequest) {
         case "testimonials": {
           if (id) await Testimonial.findByIdAndUpdate(id, cleanData);
           else await Testimonial.create(cleanData);
+          break;
+        }
+        case "stories": {
+          if (id) await SuccessStory.findByIdAndUpdate(id, cleanData);
+          else await SuccessStory.create(cleanData);
           break;
         }
         default:

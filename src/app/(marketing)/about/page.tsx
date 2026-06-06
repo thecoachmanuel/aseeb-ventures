@@ -19,7 +19,7 @@ export default function AboutPage() {
           <div className="prose prose-lg prose-headings:text-crop-dark max-w-none">
             <h2 className="text-2xl lg:text-3xl font-bold">Center of Analytical & Agronomy Excellence</h2>
             <p className="text-gray-600 leading-relaxed mt-4">
-              Aseeb Ventures is Africa&apos;s leading agricultural testing laboratory & agronomy advisory services company. We are leaders in soil fertility, water quality, food safety, pesticide residues, fertilizer quality, animal feed, plant disease & nematode laboratory analysis.
+              Aseeb Ventures is Africa&apos;s leading agricultural equipment sales, agrochemicals, testing laboratory & agronomy advisory services company. We are leaders in soil fertility, water quality, food safety, pesticide residues, fertilizer quality, animal feed, plant disease & nematode laboratory analysis.
             </p>
             <p className="text-gray-600 leading-relaxed mt-3">
               We are leading farm management consultants offering farm advisory services with advanced tools such as satellite imagery for precision farming, GIS applications for soil mapping & land suitability surveys.
@@ -32,7 +32,7 @@ export default function AboutPage() {
 
             <h2 className="text-2xl lg:text-3xl font-bold mt-12">Our Presence</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-              {[{ country: "Kenya", city: "Limuru", phone: "+254 711 094 444" }, { country: "Nigeria", city: "Ibadan", phone: "+234 803 978 4205" }, { country: "Zambia", city: "Lusaka", phone: "+260 97 742 2250" }].map((loc) => (
+              {[{ country: "Nigeria", city: "Ibadan", phone: "+234 805 616 5347" }].map((loc) => (
                 <div key={loc.country} className="bg-crop-gray p-6 rounded-xl">
                   <h3 className="font-bold text-lg text-crop-green">{loc.country}</h3>
                   <p className="text-sm text-gray-600">{loc.city}</p>

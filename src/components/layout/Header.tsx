@@ -108,6 +108,8 @@ export function Header() {
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [user, setUser] = useState<{ name: string; role: string; image?: string } | null>(null);
   const [userLoaded, setUserLoaded] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
@@ -155,9 +157,28 @@ export function Header() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/?s=${encodeURIComponent(searchQuery.trim())}`;
+      window.location.href = `/?q=${encodeURIComponent(searchQuery.trim())}`;
     }
   };
+
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      setSearchLoading(true);
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery.trim())}`);
+        const data = await res.json();
+        setSearchResults(data.results || []);
+      } catch {
+        setSearchResults([]);
+      }
+      setSearchLoading(false);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -354,7 +375,7 @@ export function Header() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search..."
+                  placeholder="Search services, articles..."
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009050] focus:border-transparent"
                   autoFocus
                 />
@@ -362,6 +383,37 @@ export function Header() {
                   Search
                 </button>
               </form>
+              {searchLoading && (
+                <div className="mt-4 flex justify-center">
+                  <div className="w-5 h-5 border-2 border-[#009050] border-t-transparent rounded-full animate-spin" />
+                </div>
+              )}
+              {!searchLoading && searchResults.length > 0 && (
+                <div className="mt-4 space-y-2 max-h-80 overflow-y-auto">
+                  {searchResults.map((r, i) => (
+                    <a
+                      key={i}
+                      href={r.url}
+                      onClick={() => setSearchOpen(false)}
+                      className="block p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className={cn(
+                          "text-xs font-medium px-2 py-0.5 rounded",
+                          r.type === "service" ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
+                        )}>
+                          {r.type === "service" ? "Service" : "Article"}
+                        </span>
+                        <h4 className="font-medium text-sm text-gray-900">{r.title}</h4>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1 truncate">{r.excerpt?.substring(0, 100)}</p>
+                    </a>
+                  ))}
+                </div>
+              )}
+              {!searchLoading && searchQuery.trim() && searchResults.length === 0 && (
+                <p className="mt-4 text-sm text-gray-500 text-center">No results found for &ldquo;{searchQuery}&rdquo;</p>
+              )}
             </div>
           </div>
         )}

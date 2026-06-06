@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = { title: "Success Stories" };
 
 const stories = [
-  { title: "How We Achieved Massive 11.84 ton/ha Barley Yield", slug: "barley-farming-in-kenya", excerpt: "Barley farming in Kenya is setting new yield records as witnessed in various barley trials conducted in Timau, Meru County. Trials are a huge part of making progress in farming, and back in September 2018 we harvested something truly special.", location: "Timau, Meru County", crop: "Barley" },
+  { title: "How We Achieved Massive 11.84 ton/ha Barley Yield", slug: "barley-farming-in-kenya", excerpt: "Barley farming in Nigeria is setting new yield records as witnessed in various barley trials conducted in Jos, Plateau State. Trials are a huge part of making progress in farming, and back in September 2018 we harvested something truly special.", location: "Jos, Plateau State", crop: "Barley" },
   { title: "Soil Testing For Smallscale Farmers In Malawi", slug: "soil-testing-for-smallscale-farmers-in-malawi", excerpt: "Our on-site AI based soil testing platform has already reached 90,000 smallholder farmers across Africa, bringing affordable and accessible soil analysis to those who need it most.", location: "Malawi", crop: "Various" },
 ];
 

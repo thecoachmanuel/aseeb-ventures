@@ -23,7 +23,7 @@ export default function TermsPage() {
           <p>Aseeb Ventures shall not be liable for any indirect, incidental, special, or consequential damages resulting from the use or inability to use our services or website.</p>
 
           <h2 className="text-xl font-bold text-crop-dark mt-8">5. Governing Law</h2>
-          <p>These terms and conditions are governed by and construed in accordance with the laws of Kenya.</p>
+          <p>These terms and conditions are governed by and construed in accordance with the laws of Nigeria.</p>
         </div>
       </div>
     </section>

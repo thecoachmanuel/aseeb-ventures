@@ -6,9 +6,9 @@ const stories: Record<string, { title: string; content: string; farmerName?: str
   "barley-farming-in-kenya": {
     title: "How We Achieved Massive 11.84 ton/ha Barley Yield",
     farmerName: "Various Farmers",
-    location: "Timau, Meru County",
+    location: "Jos, Plateau State",
     crop: "Barley",
-    content: `Barley farming in Kenya is setting new yield records as witnessed in various barley trials conducted in Timau, Meru County. Trials are a huge part of making progress in farming, and back in September 2018 we harvested something truly special. A plot of barley — 10 metres long by 2 metres in length — that achieved an incredible 11.84 tons per hectare.
+    content: `Barley farming in Nigeria is setting new yield records as witnessed in various barley trials conducted in Jos, Plateau State. Trials are a huge part of making progress in farming, and back in September 2018 we harvested something truly special. A plot of barley — 10 metres long by 2 metres in length — that achieved an incredible 11.84 tons per hectare.
 
 How Did We Achieve This?
 The remarkable yield was achieved through a combination of factors:

@@ -1,7 +1,61 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+
+function SearchResultsSection() {
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+  const [results, setResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!query) return;
+    setLoading(true);
+    fetch(`/api/search?q=${encodeURIComponent(query)}`)
+      .then((r) => r.json())
+      .then((d) => { setResults(d.results || []); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, [query]);
+
+  if (!query) return null;
+
+  return (
+    <section className="py-12 bg-gray-50">
+      <div className="max-w-4xl mx-auto px-4">
+        <h2 className="text-2xl font-bold mb-6">
+          Search results for &ldquo;{query}&rdquo;
+        </h2>
+        {loading ? (
+          <div className="flex justify-center py-8">
+            <div className="w-8 h-8 border-4 border-[#009050] border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : results.length === 0 ? (
+          <p className="text-gray-500 text-center py-8">No results found.</p>
+        ) : (
+          <div className="space-y-4">
+            {results.map((r, i) => (
+              <Link
+                key={i}
+                href={r.url}
+                className="block bg-white rounded-xl p-6 shadow-sm border hover:border-[#009050] transition-colors"
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded ${r.type === "service" ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}>
+                    {r.type === "service" ? "Service" : "Article"}
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold">{r.title}</h3>
+                <p className="text-sm text-gray-600 mt-1">{r.excerpt?.substring(0, 200)}</p>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
 
 const slides = [
   {
@@ -64,7 +118,7 @@ const pillars = [
 const successStories = [
   {
     title: "How We Achieved Massive 11.84 ton/ha Barley Yield",
-    excerpt: "Barley farming in Kenya is setting new yield records as witnessed in various barley trials conducted in Timau, Meru County.",
+    excerpt: "Barley farming in Nigeria is setting new yield records as witnessed in various barley trials conducted in Jos, Plateau State.",
     image: "/images/success/barley.jpg",
     href: "/success-stories/barley-farming-in-kenya",
   },
@@ -105,6 +159,15 @@ const blogPosts = [
 ];
 
 export default function HomePage() {
+  return (
+    <Suspense fallback={null}>
+      <SearchResultsSection />
+      <HomePageContent />
+    </Suspense>
+  );
+}
+
+function HomePageContent() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slideCount = slides.length;
 
@@ -196,7 +259,7 @@ export default function HomePage() {
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-2xl lg:text-3xl font-bold mb-4">Center of Analytical & Agronomy Excellence</h2>
             <p className="text-gray-600 leading-relaxed">
-              Aseeb Ventures is Africa&apos;s leading agricultural testing laboratory & agronomy advisory services company. Leaders in soil fertility, water quality, food safety, pesticide residues, fertilizer quality, animal feed, plant disease & nematode <Link href="/services/laboratory-services" className="text-crop-green hover:underline">laboratory analysis.</Link>
+              Aseeb Ventures is Africa&apos;s leading agricultural equipment, agrochemicals, testing laboratory & agronomy advisory services company. Leaders in soil fertility, water quality, food safety, pesticide residues, fertilizer quality, animal feed, plant disease & nematode <Link href="/services/laboratory-services" className="text-crop-green hover:underline">laboratory analysis.</Link>
             </p>
             <p className="text-gray-600 mt-3 leading-relaxed">
               Leading farm management consultants offering <Link href="/services/farm-advisory-services" className="text-crop-green hover:underline">farm advisory services</Link> with advanced tools such as satellite imagery for precision farming, GIS applications for soil mapping & land suitability surveys.
