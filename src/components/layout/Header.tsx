@@ -194,7 +194,7 @@ export function Header() {
 
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">
-              <img src="/icons/cropnuts.svg" alt="Aseeb Ventures" className="h-10 lg:h-12 w-auto" />
+              <img src="/images/logo-1.png" alt="Aseeb Ventures" className="h-10 lg:h-12 w-auto" />
             </Link>
 
             {/* Desktop nav */}
@@ -325,7 +325,7 @@ export function Header() {
           <div className="absolute left-0 top-0 bottom-0 w-80 bg-[#009050] text-white overflow-y-auto">
             <div className="p-4">
               <div className="flex justify-between items-center mb-6">
-                <img src="/images/logo.jpg" alt="Aseeb Ventures" className="h-8 w-auto rounded" />
+                <img src="/images/logo-1.png" alt="Aseeb Ventures" className="h-8 w-auto" />
                 <button onClick={() => setMobileMenuOpen(false)} className="text-white p-1">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
