@@ -210,8 +210,7 @@ export function Header() {
                     href={item.href}
                     className={cn(
                       "px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#009050] transition-colors rounded-md",
-                      item.id === "home" && "text-[#009050]",
-                      activeMegaMenu === item.id && "text-[#009050]"
+                      item.id === "home" && "text-[#009050]"
                     )}
                   >
                     {item.label}
@@ -267,7 +266,7 @@ export function Header() {
         {activeMegaMenu && activeMegaItem?.megaContent && (
           <div
             ref={megaPanelRef}
-            className="bg-[#009050] text-white border-t border-white/10"
+            className="bg-white border-t border-gray-200 shadow-lg"
             onMouseEnter={handlePanelEnter}
             onMouseLeave={handlePanelLeave}
           >
@@ -281,14 +280,14 @@ export function Header() {
                     key={idx}
                     href={sub.href}
                     onClick={() => setActiveMegaMenu(null)}
-                    className="group flex gap-4 p-3 rounded-lg hover:bg-white/10 transition-colors"
+                    className="group flex gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                    <div className="flex-shrink-0 w-12 h-12 bg-[#e8f5ed] rounded-lg flex items-center justify-center">
                       <img src={sub.icon} alt="" className="w-7 h-7" />
                     </div>
                     <div className="min-w-0">
-                      <h4 className="font-semibold text-sm mb-1">{sub.title}</h4>
-                      <p className="text-xs text-white/70 leading-relaxed">{sub.description}</p>
+                      <h4 className="font-semibold text-sm mb-1 text-gray-800 group-hover:text-[#009050] transition-colors">{sub.title}</h4>
+                      <p className="text-xs text-gray-500 leading-relaxed">{sub.description}</p>
                     </div>
                   </Link>
                 ))}
