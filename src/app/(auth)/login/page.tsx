@@ -1,6 +1,4 @@
-import { Metadata } from "next";
-
-export const metadata: Metadata = { title: "Log In" };
+"use client";
 
 export default function LoginPage() {
   return (

@@ -1,7 +1,6 @@
-import { Metadata } from "next";
-import Link from "next/link";
+"use client";
 
-export const metadata: Metadata = { title: "Contact Us" };
+import Link from "next/link";
 
 export default function ContactPage() {
   return (

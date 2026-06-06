@@ -1,6 +1,4 @@
-import { Metadata } from "next";
-
-export const metadata: Metadata = { title: "Register" };
+"use client";
 
 export default function RegisterPage() {
   return (
