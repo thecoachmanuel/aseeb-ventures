@@ -102,7 +102,6 @@ export default function LoginPage() {
       <div className="max-w-md w-full mx-auto px-4">
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <div className="text-center mb-6">
-            <img src="/icons/cropnuts.svg" alt="Aseeb Ventures" className="h-10 mx-auto mb-4" />
             <h1 className="text-2xl font-bold">Sign In</h1>
             <p className="text-gray-500 text-sm mt-1">Access your account</p>
           </div>
