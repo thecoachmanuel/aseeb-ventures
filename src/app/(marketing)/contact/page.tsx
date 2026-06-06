@@ -73,7 +73,7 @@ export default function ContactPage() {
             <div className="space-y-8">
               {[
                 { country: "Nigeria", city: "Ibadan", address: "Plot 12, Oluyole Industrial Estate", phone: "+234 803 978 4205", email: "info@aseeb-ventures.vercel.app" },
-                { country: "Zambia", city: "Lusaka", address: "Plot 45, Lusaka South MFEZ", phone: "+260 97 742 2250", email: "info@aseeb-ventures.vercel.app" },
+                { country: "Nigeria", city: "Lagos", address: "Plot 12, Victoria Island", phone: "+234 803 978 4205", email: "info@aseeb-ventures.vercel.app" },
               ].map((loc) => (
                 <div key={loc.country} className="bg-crop-gray p-6 rounded-xl">
                   <h3 className="font-bold text-lg text-crop-green">{loc.country} — {loc.city}</h3>

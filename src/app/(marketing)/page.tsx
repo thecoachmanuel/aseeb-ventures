@@ -74,16 +74,19 @@ const slides = [
     title: "Internationally Accredited Laboratory Services",
     description: "20 years of delivering high quality laboratory & advisory services for agriculture, environmental monitoring and food safety sectors in Africa.",
     cta: { label: "READ MORE", href: "/services/soil-testing" },
+    image: "/images/hero/hero-banner-3.jpg",
   },
   {
     title: "Expert hands-on training from people with over 20 years of experience",
     description: "Sign up today and get hands-on technical training from our agronomy expert.",
     cta: { label: "READ MORE", href: "/services/agronomy-training" },
+    image: "/images/hero/hero-banner-4.jpg",
   },
   {
     title: "Breaking yield records with precision farming",
     description: "Tap into our large-scale precision agronomy service to achieve internationally record-breaking yields.",
     cta: { label: "READ MORE", href: "#" },
+    image: "/images/hero/hero-banner-5.jpg",
   },
 ];
 
@@ -126,7 +129,6 @@ const successStories = [
     title: "Soil Testing For Smallscale Farmers In Malawi",
     excerpt: "Our on-site AI based soil testing platform has already reached 90,000 smallholder farmers across Africa.",
     image: "/images/success/malawi.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=PWXesG1IXTc",
     href: "/success-stories/soil-testing-for-smallscale-farmers-in-malawi",
   },
 ];

@@ -31,9 +31,14 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ s
     </section>
   );
 
+  const banners: Record<string, string> = {
+    "how-to-videos": "/images/banners/news-banner.jpg",
+    news: "/images/banners/news-banner.jpg",
+  };
+
   return (
     <>
-      <section className="relative h-64 lg:h-80 bg-cover bg-center" style={{ backgroundImage: "url('/images/banners/blog-banner.jpg')" }}>
+      <section className="relative h-64 lg:h-80 bg-cover bg-center" style={{ backgroundImage: `url('${banners[slug] || "/images/banners/blog-banner.jpg"}')` }}>
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative h-full flex items-center justify-center">
           <h1 className="text-3xl lg:text-5xl font-bold text-white">{cat.title}</h1>

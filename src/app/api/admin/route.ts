@@ -19,6 +19,7 @@ import { Nutrient } from "@/models/Nutrient";
 import { Resource } from "@/models/Resource";
 import { LegalPage } from "@/models/LegalPage";
 import { IWantToOption } from "@/models/IWantToOption";
+import { TestResult } from "@/models/TestResult";
 
 const resourceMap: Record<string, { model: any; sortField: string; sortDir: 1 | -1 }> = {
   services: { model: Service, sortField: "createdAt", sortDir: -1 },
@@ -38,6 +39,7 @@ const resourceMap: Record<string, { model: any; sortField: string; sortDir: 1 | 
   resources: { model: Resource, sortField: "order", sortDir: 1 },
   legalpages: { model: LegalPage, sortField: "createdAt", sortDir: -1 },
   iwantto: { model: IWantToOption, sortField: "order", sortDir: 1 },
+  testresults: { model: TestResult, sortField: "createdAt", sortDir: -1 },
 };
 
 async function requireAdmin() {

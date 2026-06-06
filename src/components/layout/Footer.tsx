@@ -166,9 +166,6 @@ export function Footer() {
                 <a href="https://www.instagram.com/" target="_blank" rel="noopener" title="Instagram">
                   <img src="/icons/instagram_icon.svg" alt="Instagram" className="w-6 h-6" />
                 </a>
-                <a href="https://www.youtube.com/channel/" target="_blank" rel="noopener" title="Youtube">
-                  <img src="/icons/youtube_page.svg" alt="Youtube" className="w-6 h-6" />
-                </a>
               </div>
             </div>
           </div>

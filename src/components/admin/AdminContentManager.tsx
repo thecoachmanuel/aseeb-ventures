@@ -5,7 +5,8 @@ import { useState, useEffect } from "react";
 type ResourceName =
   | "services" | "blog" | "contacts" | "testimonials" | "stories" | "subscribers"
   | "users" | "siteconfig" | "navigation" | "locations" | "heroslides"
-  | "pillars" | "stats" | "nutrients" | "resources" | "legalpages" | "iwantto";
+  | "pillars" | "stats" | "nutrients" | "resources" | "legalpages" | "iwantto"
+  | "testresults";
 
 interface FormField {
   name: string;
@@ -154,6 +155,20 @@ const formFields: Record<ResourceName, FormField[]> = {
   ],
   contacts: [],
   subscribers: [],
+  testresults: [
+    { name: "sampleId", label: "Sample ID", type: "text", required: true },
+    { name: "sampleType", label: "Sample Type", type: "select", options: [
+      { value: "soil", label: "Soil" }, { value: "water", label: "Water" }, { value: "plant", label: "Plant Tissue" },
+      { value: "food", label: "Food Safety" }, { value: "fertilizer", label: "Fertilizer" }, { value: "feed", label: "Animal Feed" },
+    ]},
+    { name: "status", label: "Status", type: "select", options: [
+      { value: "submitted", label: "Submitted" }, { value: "in_progress", label: "In Progress" }, { value: "completed", label: "Completed" }, { value: "cancelled", label: "Cancelled" },
+    ]},
+    { name: "farmName", label: "Farm Name", type: "text" },
+    { name: "location", label: "Location", type: "text" },
+    { name: "cropType", label: "Crop Type", type: "text" },
+    { name: "notes", label: "Notes", type: "textarea", rows: 2 },
+  ],
 };
 
 interface Props {
@@ -228,6 +243,7 @@ export function AdminContentManager({ resource, title, canCreate = true }: Props
     if (resource === "navigation") return item.label || "Nav Item";
     if (resource === "locations") return `${item.country} — ${item.city}`;
     if (resource === "iwantto") return item.label || "Option";
+    if (resource === "testresults") return `${item.sampleId} — ${item.sampleType}`;
     return item.title || item.name || item.label || item._id;
   };
 
@@ -246,6 +262,7 @@ export function AdminContentManager({ resource, title, canCreate = true }: Props
     if (resource === "locations") return item.address?.substring(0, 80) || "";
     if (resource === "siteconfig") return item.email || "";
     if (resource === "subscribers") return item.createdAt ? `Subscribed ${new Date(item.createdAt).toLocaleDateString()}` : "";
+    if (resource === "testresults") return `Status: ${item.status?.replace("_", " ")} • ${item.farmName || ""}`;
     return "";
   };
 
