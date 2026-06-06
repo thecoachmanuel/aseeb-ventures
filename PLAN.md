@@ -1,23 +1,23 @@
-# Cropnuts.com Clone — Implementation Plan
+# Aseeb Ventures — Implementation Plan
 
 ## Overview
-Clone the entire https://cropnuts.com/ website (agricultural & environmental laboratory testing)
+Clone the entire https://aseeb-ventures.com/ website (agricultural & environmental laboratory testing)
 using **Next.js** (App Router) for the frontend/backend and **MongoDB** (via Mongoose) for the database.
 
 ---
 
 ## Phase 1: Scrape & Analyze the Live Site
 
-**Goal:** Download a complete local copy of cropnuts.com and catalog every page, feature, and data type.
+**Goal:** Download a complete local copy of aseeb-ventures.com and catalog every page, feature, and data type.
 
 ### Step 1.1 — Full Site Mirror with wget
 ```bash
 wget --mirror --page-requisites --adjust-extension --convert-links \
      --wait=1 --limit-rate=500k --no-parent \
-     --directory-prefix=./cropnuts-scrape \
-     https://cropnuts.com/
+     --directory-prefix=./aseeb-ventures-scrape \
+     https://aseeb-ventures.com/
 ```
-This produces a fully browsable static mirror in `./cropnuts-scrape/`.
+This produces a fully browsable static mirror in `./aseeb-ventures-scrape/`.
 
 ### Step 1.2 — Structural Analysis
 After scraping, analyze:
@@ -63,7 +63,7 @@ From the scraped content, identify all data entities:
 
 ### Project Structure
 ```
-cropnuts-clone/
+aseeb-ventures/
 ├── src/
 │   ├── app/                    # Next.js App Router pages
 │   │   ├── (marketing)/        # Public-facing pages

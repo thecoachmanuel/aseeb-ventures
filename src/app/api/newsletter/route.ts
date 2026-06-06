@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { NewsletterSubscriber } from "@/models/NewsletterSubscriber";
+import { sendNewsletterWelcome } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,6 +26,8 @@ export async function POST(request: NextRequest) {
       isActive: true,
       subscribedAt: new Date(),
     });
+
+    sendNewsletterWelcome({ firstName, email });
 
     return NextResponse.json({ success: true });
   } catch (error) {

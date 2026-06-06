@@ -21,7 +21,7 @@ const posts: Record<string, { title: string; date: string; content: string; tags
 
 6. Micronutrients — Iron, zinc, manganese, copper, and boron availability is strongly influenced by soil pH. Chelated micronutrient formulations improve plant uptake in high pH soils.
 
-Key Takeaway: Regular soil testing is essential for understanding nutrient availability in your soils. Contact Cropnuts for comprehensive soil analysis and tailored fertilizer recommendations.`,
+Key Takeaway: Regular soil testing is essential for understanding nutrient availability in your soils. Contact Aseeb Ventures for comprehensive soil analysis and tailored fertilizer recommendations.`,
   },
   "soil-cation-exchange-capacity-cec": {
     title: "Understanding Soil Cation Exchange Capacity (CEC)",
@@ -42,7 +42,7 @@ Why CEC Matters:
 - Fertilizer management — Understanding CEC helps determine appropriate fertilizer application rates and timing.
 - Lime requirement — CEC is used to calculate lime requirements for acidic soils.
 
-Contact Cropnuts for soil CEC analysis as part of our comprehensive soil testing package.`,
+Contact Aseeb Ventures for soil CEC analysis as part of our comprehensive soil testing package.`,
   },
   "factors-affecting-nutrient-availability-to-plants": {
     title: "Factors Affecting Nutrient Availability to Plants",
@@ -62,7 +62,7 @@ Contact Cropnuts for soil CEC analysis as part of our comprehensive soil testing
 
 6. Nutrient Interactions — Some nutrients compete for uptake. For example, high potassium can reduce magnesium uptake, and high phosphorus can reduce zinc availability.
 
-Recommendation: Regular comprehensive soil testing through Cropnuts can identify these limiting factors and help you develop effective nutrient management strategies.`,
+Recommendation: Regular comprehensive soil testing through Aseeb Ventures can identify these limiting factors and help you develop effective nutrient management strategies.`,
   },
 };
 

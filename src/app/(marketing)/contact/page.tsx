@@ -72,9 +72,7 @@ export default function ContactPage() {
             {/* Contact info */}
             <div className="space-y-8">
               {[
-                { country: "Kenya", city: "Limuru", address: "Crop Nutrition Laboratory Services, Limuru, off Limuru road, P.O. Box 66437-00800 Nairobi", phone: "+254 711 094 444", email: "support@cropnuts.com" },
-                { country: "Nigeria", city: "Ibadan", phone: "+234 803 978 4205", email: "agriserve_ng@cropnuts.com" },
-                { country: "Zambia", city: "Lusaka", phone: "+260 97 742 2250", email: "support_zm@cropnuts.com" },
+                { country: "Nigeria", city: "Ibadan", address: "Aseeb Ventures, Shop 21 Lagelu Shopping Complex, Opposite Dizengoff Monatan, Ibadan", phone: "+234 805 165 347, +234 915 772 8554", email: "aseebventure1@gmail.com" },
               ].map((loc) => (
                 <div key={loc.country} className="bg-crop-gray p-6 rounded-xl">
                   <h3 className="font-bold text-lg text-crop-green">{loc.country} — {loc.city}</h3>

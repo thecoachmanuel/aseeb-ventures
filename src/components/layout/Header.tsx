@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const menuItems = [
@@ -70,19 +71,19 @@ const menuItems = [
       {
         icon: "/icons/success_stories.svg",
         title: "Success Stories",
-        description: "Real stories, real farmers success with a little help from Cropnuts…",
+        description: "Real stories, real farmers success with a little help from Aseeb Ventures…",
         href: "/success-stories",
       },
       {
         icon: "/icons/faqs.svg",
         title: "FAQs",
-        description: "Cropnuts help desk. Search the knowledge base…",
-        href: "https://cropnuts.helpscoutdocs.com",
+        description: "Aseeb Ventures help desk. Search the knowledge base…",
+        href: "https://cropnuts.com",
       },
       {
         icon: "/icons/news_events.svg",
         title: "News & Events",
-        description: "Latest news about Cropnuts, learn of upcoming events, trainings…",
+        description: "Latest news about Aseeb Ventures, learn of upcoming events, trainings…",
         href: "/blog/category/news",
       },
     ],
@@ -102,11 +103,31 @@ const menuItems = [
 ];
 
 export function Header() {
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [user, setUser] = useState<{ name: string; role: string } | null>(null);
+  const [userLoaded, setUserLoaded] = useState(false);
   const megaTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => (r.ok ? r.json() : Promise.resolve({ user: null })))
+      .then((data) => {
+        setUser(data.user);
+        setUserLoaded(true);
+      })
+      .catch(() => setUserLoaded(true));
+  }, []);
+
+  const handleLogout = useCallback(async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    setUser(null);
+    router.push("/");
+    router.refresh();
+  }, [router]);
 
   const handleMegaEnter = (id: string) => {
     if (megaTimeout.current) clearTimeout(megaTimeout.current);
@@ -140,8 +161,7 @@ export function Header() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-end gap-6 py-1.5">
             <a href="https://cropnuts.helpscoutdocs.com/" target="_blank" rel="noopener" className="hover:underline">Help Center</a>
-            <a href="https://mapping.cropnuts.com/projects/home/" target="_blank" rel="noopener" className="hover:underline">Kenya Soil Fertility Map</a>
-            <a href="tel:+254711094444" className="hover:underline">+254 711 094 444</a>
+            <a href="tel:+2349157728554" className="hover:underline">+234 915 772 8554</a>
           </div>
         </div>
       </div>
@@ -163,7 +183,7 @@ export function Header() {
 
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">
-              <img src="/icons/cropnuts.svg" alt="Cropnuts" className="h-10 lg:h-12 w-auto" />
+              <img src="/icons/cropnuts.svg" alt="Aseeb Ventures" className="h-10 lg:h-12 w-auto" />
             </Link>
 
             {/* Desktop nav */}
@@ -228,17 +248,34 @@ export function Header() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
-              <a
-                href="https://app.cropnuts.com/"
-                target="_blank"
-                rel="noopener"
-                className="hidden lg:inline-flex items-center gap-2 bg-[#009050] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#007a40] transition-colors"
-              >
-                Portal Login
-                <svg className="w-3 h-3" viewBox="0 0 90 15" fill="currentColor">
-                  <path d="M90,7.706 L90.01,7.716 L90,7.726 L90,8 L89.726,8 L82.716,15.01 L81.99,14.284 L88.273,8 L0,8 L0,7 L88.273,7 L81.99,0.716 L82.716,-0.01 L89.726,7 L90,7 L90,7.274 L90.01,7.284 L90,7.294 L90,7.706 Z" />
-                </svg>
-              </a>
+              {!userLoaded ? (
+                <div className="hidden lg:block w-24 h-9" />
+              ) : user ? (
+                <div className="hidden lg:flex items-center gap-2">
+                  <Link
+                    href={user.role === "admin" ? "/admin" : "/dashboard"}
+                    className="text-sm font-medium text-gray-700 hover:text-[#009050] transition-colors"
+                  >
+                    {user.name}
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="text-sm text-gray-500 hover:text-red-600 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="hidden lg:inline-flex items-center gap-2 bg-[#009050] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#007a40] transition-colors"
+                >
+                  Portal Login
+                  <svg className="w-3 h-3" viewBox="0 0 90 15" fill="currentColor">
+                    <path d="M90,7.706 L90.01,7.716 L90,7.726 L90,8 L89.726,8 L82.716,15.01 L81.99,14.284 L88.273,8 L0,8 L0,7 L88.273,7 L81.99,0.716 L82.716,-0.01 L89.726,7 L90,7 L90,7.274 L90.01,7.284 L90,7.294 L90,7.706 Z" />
+                  </svg>
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -277,7 +314,7 @@ export function Header() {
           <div className="absolute left-0 top-0 bottom-0 w-80 bg-[#009050] text-white overflow-y-auto">
             <div className="p-4">
               <div className="flex justify-between items-center mb-6">
-                <img src="/icons/cropnuts.svg" alt="Cropnuts" className="h-8 brightness-0 invert" />
+                <img src="/icons/cropnuts.svg" alt="Aseeb Ventures" className="h-8 brightness-0 invert" />
                 <button onClick={() => setMobileMenuOpen(false)} className="text-white p-1">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -316,16 +353,34 @@ export function Header() {
                 ))}
               </nav>
               <div className="mt-6 px-4">
-                <a
-                  href="https://app.cropnuts.com/"
-                  target="_blank"
-                  className="block w-full text-center bg-white text-[#009050] py-3 rounded-lg font-semibold"
-                >
-                  Portal Login
-                </a>
+                {user ? (
+                  <div className="space-y-2">
+                    <Link
+                      href={user.role === "admin" ? "/admin" : "/dashboard"}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full text-center bg-white/20 text-white py-3 rounded-lg font-semibold"
+                    >
+                      {user.name}
+                    </Link>
+                    <button
+                      onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
+                      className="block w-full text-center text-white/70 py-2 text-sm hover:text-white"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block w-full text-center bg-white text-[#009050] py-3 rounded-lg font-semibold"
+                  >
+                    Portal Login
+                  </Link>
+                )}
               </div>
               <div className="mt-6 px-4 text-xs text-white/60">
-                © {new Date().getFullYear()} Cropnuts
+                © {new Date().getFullYear()} Aseeb Ventures
               </div>
             </div>
           </div>

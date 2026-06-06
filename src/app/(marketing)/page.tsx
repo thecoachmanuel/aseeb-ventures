@@ -1,11 +1,12 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 
 const slides = [
   {
     image: "/images/hero/hero-banner-1.jpg",
-    title: "Welcome to Crop Nutrition Laboratory Services",
+    title: "Welcome to Aseeb Ventures",
     description: "Advising farmers across Africa on how to grow the best with less.",
     cta: { label: "READ MORE", href: "/services/laboratory-services" },
   },
@@ -104,36 +105,61 @@ const blogPosts = [
 ];
 
 export default function HomePage() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slideCount = slides.length;
+
+  const goToSlide = useCallback((index: number) => {
+    setCurrentSlide(index);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slideCount);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [slideCount]);
+
   return (
     <>
       {/* Hero Slider */}
       <section className="relative h-[500px] lg:h-[600px] bg-gray-900 overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/hero/hero-banner-1.jpg')" }}
-        />
+        {slides.map((slide, i) => (
+          <div
+            key={i}
+            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ${
+              i === currentSlide ? "opacity-100" : "opacity-0"
+            }`}
+            style={{ backgroundImage: slide.image ? `url(${slide.image})` : undefined }}
+          />
+        ))}
+        {!slides[currentSlide]?.image && (
+          <div className="absolute inset-0 bg-crop-dark" />
+        )}
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative h-full flex items-center">
           <div className="max-w-7xl mx-auto px-4 w-full">
-            <div className="max-w-2xl text-white">
+            <div className="max-w-2xl text-white transition-all duration-500" key={currentSlide}>
               <h1 className="text-3xl lg:text-5xl font-bold mb-4 leading-tight">
-                {slides[0].title}
+                {slides[currentSlide].title}
               </h1>
               <p className="text-lg lg:text-xl text-white/90 mb-8">
-                {slides[0].description}
+                {slides[currentSlide].description}
               </p>
-              <Link href={slides[0].cta.href} className="banner_cta">
-                {slides[0].cta.label}
+              <Link href={slides[currentSlide].cta.href} className="banner_cta">
+                {slides[currentSlide].cta.label}
               </Link>
             </div>
           </div>
         </div>
-        {/* Slider indicators */}
+        {/* Slider controls */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
           {slides.map((_, i) => (
             <button
               key={i}
-              className={`w-3 h-3 rounded-full transition-colors ${i === 0 ? "bg-white" : "bg-white/40"}`}
+              onClick={() => goToSlide(i)}
+              className={`w-3 h-3 rounded-full transition-colors ${
+                i === currentSlide ? "bg-white" : "bg-white/40 hover:bg-white/60"
+              }`}
               aria-label={`Slide ${i + 1}`}
             />
           ))}
@@ -170,7 +196,7 @@ export default function HomePage() {
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-2xl lg:text-3xl font-bold mb-4">Center of Analytical & Agronomy Excellence</h2>
             <p className="text-gray-600 leading-relaxed">
-              Crop Nutrition Laboratory Services Ltd (Cropnuts) is East Africa&apos;s leading agricultural testing laboratory & agronomy advisory services company. Leaders in soil fertility, water quality, food safety, pesticide residues, fertilizer quality, animal feed, plant disease & nematode <Link href="/services/laboratory-services" className="text-crop-green hover:underline">laboratory analysis.</Link>
+              Aseeb Ventures is Africa&apos;s leading agricultural testing laboratory & agronomy advisory services company. Leaders in soil fertility, water quality, food safety, pesticide residues, fertilizer quality, animal feed, plant disease & nematode <Link href="/services/laboratory-services" className="text-crop-green hover:underline">laboratory analysis.</Link>
             </p>
             <p className="text-gray-600 mt-3 leading-relaxed">
               Leading farm management consultants offering <Link href="/services/farm-advisory-services" className="text-crop-green hover:underline">farm advisory services</Link> with advanced tools such as satellite imagery for precision farming, GIS applications for soil mapping & land suitability surveys.
@@ -225,7 +251,7 @@ export default function HomePage() {
             <div>
               <h3 className="text-2xl lg:text-3xl font-bold mb-4">Our Laboratory is Internationally Accredited</h3>
               <p className="text-gray-300 leading-relaxed mb-6">
-                Cropnuts is ISO/IEC 17025 accredited by the Kenya Accreditation Service (KENAS). ISO/IEC 17025 accreditation fulfills the general competence requirements for testing and calibration laboratories and demonstrates our ability to carry out laboratory testing and calibration to an international standard.
+                Aseeb Ventures is ISO/IEC 17025 accredited by the Kenya Accreditation Service (KENAS). ISO/IEC 17025 accreditation fulfills the general competence requirements for testing and calibration laboratories and demonstrates our ability to carry out laboratory testing and calibration to an international standard.
               </p>
               <Link href="/services/laboratory-services" className="banner_cta_outline">
                 READ MORE
@@ -280,7 +306,7 @@ export default function HomePage() {
             <img src="/icons/news_icon.svg" alt="" className="w-12 h-12 mx-auto mb-4" />
             <h2 className="text-2xl lg:text-3xl font-bold mb-2">Stay Informed, Be Inspired</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Get the latest news from Cropnuts and don&apos;t miss out on the latest in independent agronomy, including articles, alerts, case studies and training opportunities plus much more.
+              Get the latest news from Aseeb Ventures and don&apos;t miss out on the latest in independent agronomy, including articles, alerts, case studies and training opportunities plus much more.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

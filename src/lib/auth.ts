@@ -1,37 +1,50 @@
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
 
 const AUTH_SECRET = process.env.AUTH_SECRET || "dev-secret-change-in-production";
 
-function encode(str: string) {
-  const key = AUTH_SECRET;
-  let result = "";
-  for (let i = 0; i < str.length; i++) {
-    result += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-  }
-  return Buffer.from(result).toString("base64");
+export interface SessionUser {
+  id: string;
+  email: string;
+  name: string;
+  role: "admin" | "client" | "viewer";
 }
 
-function decode(str: string) {
-  const key = AUTH_SECRET;
-  const decoded = Buffer.from(str, "base64").toString();
-  let result = "";
-  for (let i = 0; i < decoded.length; i++) {
-    result += String.fromCharCode(decoded.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-  }
-  return result;
+export function createSessionToken(user: SessionUser): string {
+  return jwt.sign(user, AUTH_SECRET, { expiresIn: "7d" });
 }
 
-export async function getServerSession() {
+export async function getServerSession(): Promise<SessionUser | null> {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("auth-token")?.value;
     if (!token) return null;
-    return JSON.parse(decode(token)) as { id: string; role: string; name: string; email: string };
+    return jwt.verify(token, AUTH_SECRET) as SessionUser;
   } catch {
     return null;
   }
 }
 
-export function createSessionToken(user: { id: string; role: string; name: string; email: string }) {
-  return encode(JSON.stringify(user));
+export function setAuthCookieOnResponse(
+  response: NextResponse,
+  token: string
+) {
+  response.cookies.set("auth-token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  });
+}
+
+export function clearAuthCookieOnResponse(response: NextResponse) {
+  response.cookies.set("auth-token", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
 }

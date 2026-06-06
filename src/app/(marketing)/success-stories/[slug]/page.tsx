@@ -19,9 +19,9 @@ The remarkable yield was achieved through a combination of factors:
 - Proper irrigation scheduling
 - Regular plant tissue analysis to fine-tune nutrition
 
-The Cropnuts team worked closely with the farmers throughout the season, providing technical advice based on real-time data from soil and plant analysis. This is a perfect example of what can be achieved when science meets practical farming.
+The Aseeb Ventures team worked closely with the farmers throughout the season, providing technical advice based on real-time data from soil and plant analysis. This is a perfect example of what can be achieved when science meets practical farming.
 
-If you're interested in improving your barley yields, contact Cropnuts for comprehensive soil testing and tailored agronomic advice.`,
+If you're interested in improving your barley yields, contact Aseeb Ventures for comprehensive soil testing and tailored agronomic advice.`,
   },
   "soil-testing-for-smallscale-farmers-in-malawi": {
     title: "Soil Testing For Smallscale Farmers In Malawi",
@@ -38,7 +38,7 @@ The Malawi project demonstrated that smallscale farmers can benefit enormously f
 
 The mobile soil testing platform uses advanced spectroscopy and AI algorithms to provide instant soil analysis results. Farmers receive personalized fertilizer recommendations via SMS, making the information accessible even in remote areas without internet connectivity.
 
-This project shows that technology can bridge the gap between large-scale commercial farming and smallholder agriculture. Cropnuts is committed to continuing this work and reaching even more farmers across Africa.`,
+This project shows that technology can bridge the gap between large-scale commercial farming and smallholder agriculture. Aseeb Ventures is committed to continuing this work and reaching even more farmers across Africa.`,
   },
 };
 

@@ -24,9 +24,8 @@ const footerLinks = {
 };
 
 const locations = [
-  { country: "Kenya", city: "Limuru", phone: "+254 711 094 444", email: "support@cropnuts.com" },
-  { country: "Nigeria", city: "Ibadan", phone: "+234 803 978 4205", email: "agriserve_ng@cropnuts.com" },
-  { country: "Zambia", city: "Lusaka", phone: "+260 97 742 2250", email: "support_zm@cropnuts.com" },
+  { country: "Nigeria", city: "Ibadan", phone: "+234 805 616 5347, +234 915 772 8554", email: "aseebventure1@gmail.com, akeem.abimbola25@gmail.com" },
+  
 ];
 
 export function Footer() {
@@ -40,7 +39,7 @@ export function Footer() {
           </div>
           <h3 className="text-2xl lg:text-3xl font-bold mb-4">Subscribe to our Newsletter</h3>
           <p className="text-white/80 mb-8 max-w-2xl mx-auto text-sm leading-relaxed">
-            Get the latest news from Cropnuts and don&apos;t miss out on the latest in independent agronomy,
+            Get the latest news from Aseeb Ventures and don&apos;t miss out on the latest in independent agronomy,
             including articles, alerts, case studies and training opportunities plus much more. All sent directly to your inbox.
           </p>
           <form
@@ -88,9 +87,9 @@ export function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
             {/* About */}
             <div className="lg:col-span-1">
-              <h4 className="font-semibold text-lg mb-4">About Cropnuts</h4>
+              <h4 className="font-semibold text-lg mb-4">About Aseeb Ventures</h4>
               <p className="text-gray-400 text-sm leading-relaxed mb-4">
-                Cropnuts (or Crop Nutrition Laboratory Services Ltd) is a private company that offers
+                Aseeb Ventures is a private company that offers
                 laboratory analytics and expert agricultural advice in Africa. We started out as a small
                 analytical laboratory, offering services for agriculture and food safety...
               </p>
@@ -145,7 +144,7 @@ export function Footer() {
             <div>
               <h4 className="font-semibold text-lg mb-4">Contact Details</h4>
               <p className="text-gray-400 text-sm mb-4">
-                Crop Nutrition Laboratory Services, Limuru, off Limuru road, P.O. Box 66437-00800 Nairobi – Kenya
+                Aseeb Ventures Ltd, Ibadan – Nigeria
               </p>
               <div className="space-y-4 text-sm text-gray-400">
                 {locations.map((loc) => (
@@ -158,16 +157,16 @@ export function Footer() {
               </div>
               {/* Social links */}
               <div className="flex gap-3 mt-4">
-                <a href="https://www.facebook.com/CropnutsAg/" target="_blank" rel="noopener" title="Facebook">
+                <a href="https://www.facebook.com//" target="_blank" rel="noopener" title="Facebook">
                   <img src="/icons/facebook_icon.svg" alt="Facebook" className="w-6 h-6" />
                 </a>
-                <a href="https://twitter.com/Cropnuts" target="_blank" rel="noopener" title="Twitter">
+                <a href="https://twitter.com/" target="_blank" rel="noopener" title="Twitter">
                   <img src="/icons/twitter_icon.svg" alt="Twitter" className="w-6 h-6" />
                 </a>
-                <a href="https://www.instagram.com/cropnuts/" target="_blank" rel="noopener" title="Instagram">
+                <a href="https://www.instagram.com/" target="_blank" rel="noopener" title="Instagram">
                   <img src="/icons/instagram_icon.svg" alt="Instagram" className="w-6 h-6" />
                 </a>
-                <a href="https://www.youtube.com/channel/UCezS6vskotroG-8yawbf2vQ" target="_blank" rel="noopener" title="Youtube">
+                <a href="https://www.youtube.com/channel/" target="_blank" rel="noopener" title="Youtube">
                   <img src="/icons/youtube_page.svg" alt="Youtube" className="w-6 h-6" />
                 </a>
               </div>
@@ -177,7 +176,7 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-gray-800 mt-12 pt-6 text-center text-xs text-gray-500">
-          © Copyright {new Date().getFullYear()} - Crop Nutrition Laboratory Services Ltd.
+          © Copyright {new Date().getFullYear()} - Aseeb Ventures Ltd.
           <Link href="/terms-and-conditions" className="mx-2 hover:text-[#009050] transition-colors">Terms & Conditions</Link> |
           <Link href="/privacy-policy" className="mx-2 hover:text-[#009050] transition-colors">Privacy Policy</Link>
         </div>

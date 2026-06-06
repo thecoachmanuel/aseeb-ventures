@@ -1,4 +1,5 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
+import bcrypt from "bcryptjs";
 
 export interface IUserDoc extends Document {
   name: string;
@@ -9,8 +10,11 @@ export interface IUserDoc extends Document {
   company?: string;
   phone?: string;
   emailVerified?: Date;
+  resetToken?: string;
+  resetTokenExpiry?: Date;
   createdAt: Date;
   updatedAt: Date;
+  comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 const UserSchema = new Schema<IUserDoc>(
@@ -23,8 +27,22 @@ const UserSchema = new Schema<IUserDoc>(
     company: { type: String },
     phone: { type: String },
     emailVerified: { type: Date },
+    resetToken: { type: String },
+    resetTokenExpiry: { type: Date },
   },
   { timestamps: true }
 );
 
-export const User = mongoose.models.User || mongoose.model<IUserDoc>("User", UserSchema);
+UserSchema.pre("save", async function (next) {
+  if (!this.isModified("password") || !this.password) return next();
+  this.password = await bcrypt.hash(this.password, 12);
+  next();
+});
+
+UserSchema.methods.comparePassword = async function (candidatePassword: string) {
+  if (!this.password) return false;
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+export const User: Model<IUserDoc> =
+  mongoose.models.User || mongoose.model<IUserDoc>("User", UserSchema);

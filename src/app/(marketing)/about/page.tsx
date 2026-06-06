@@ -19,7 +19,7 @@ export default function AboutPage() {
           <div className="prose prose-lg prose-headings:text-crop-dark max-w-none">
             <h2 className="text-2xl lg:text-3xl font-bold">Center of Analytical & Agronomy Excellence</h2>
             <p className="text-gray-600 leading-relaxed mt-4">
-              Crop Nutrition Laboratory Services Ltd (Cropnuts) is East Africa&apos;s leading agricultural testing laboratory & agronomy advisory services company. We are leaders in soil fertility, water quality, food safety, pesticide residues, fertilizer quality, animal feed, plant disease & nematode laboratory analysis.
+              Aseeb Ventures is Africa&apos;s leading agricultural testing laboratory & agronomy advisory services company. We are leaders in soil fertility, water quality, food safety, pesticide residues, fertilizer quality, animal feed, plant disease & nematode laboratory analysis.
             </p>
             <p className="text-gray-600 leading-relaxed mt-3">
               We are leading farm management consultants offering farm advisory services with advanced tools such as satellite imagery for precision farming, GIS applications for soil mapping & land suitability surveys.

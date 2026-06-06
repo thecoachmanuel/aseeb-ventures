@@ -18,7 +18,7 @@ export default function ResourcesPage() {
       <section className="py-16 lg:py-24">
         <div className="max-w-5xl mx-auto px-4">
           <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">
-            Please feel free to download. If you wish to republish any of these, express permission must be obtained from Cropnuts.
+            Please feel free to download. If you wish to republish any of these, express permission must be obtained from Aseeb Ventures.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {["Soil Sampling Guide", "Fertilizer Recommendation Charts", "Crop Nutrition Handbook", "Water Quality Standards", "Food Safety Guidelines", "Carbon Farming Overview"].map((title) => (

@@ -5,22 +5,22 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Crop Nutrition Laboratory Services Ltd - Cropnuts",
-    template: "%s - Cropnuts",
+    default: "Aseeb Ventures",
+    template: "%s - Aseeb Ventures",
   },
-  description: "Crop Nutrition Laboratory Services Ltd (Cropnuts) is East Africa's leading agricultural testing laboratory & agronomy advisory services company. Leaders in soil fertility, water quality, food safety, pesticide residues, fertilizer quality, animal feed, plant disease & nematode laboratory analysis.",
+  description: "Aseeb Ventures is Africa's leading agricultural testing laboratory & agronomy advisory services company. Leaders in soil fertility, water quality, food safety, pesticide residues, fertilizer quality, animal feed, plant disease & nematode laboratory analysis.",
   openGraph: {
-    title: "Crop Nutrition Laboratory Services Ltd - Cropnuts",
-    description: "East Africa's leading agricultural testing laboratory & agronomy advisory services company.",
-    url: "https://cropnuts.com",
-    siteName: "Cropnuts",
+    title: "Aseeb Ventures",
+    description: "Africa's leading agricultural testing laboratory & agronomy advisory services company.",
+    url: "https://aseeb-ventures.com",
+    siteName: "Aseeb Ventures",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Crop Nutrition Laboratory Services Ltd - Cropnuts",
-    description: "East Africa's leading agricultural testing laboratory & agronomy advisory services company.",
+    title: "Aseeb Ventures",
+    description: "Africa's leading agricultural testing laboratory & agronomy advisory services company.",
   },
 };
 
