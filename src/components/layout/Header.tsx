@@ -78,7 +78,7 @@ const menuItems = [
         icon: "/icons/faqs.svg",
         title: "FAQs",
         description: "Aseeb Ventures help desk. Search the knowledge base…",
-        href: "https://cropnuts.com",
+        href: "https://aseeb-ventures.vercel.app",
       },
       {
         icon: "/icons/news_events.svg",
@@ -160,7 +160,7 @@ export function Header() {
       <div className="bg-[#009050] text-white text-sm hidden lg:block">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-end gap-6 py-1.5">
-            <a href="https://cropnuts.com/" target="_blank" rel="noopener" className="hover:underline">Help Center</a>
+            <a href="https://aseeb-ventures.vercel.app/" target="_blank" rel="noopener" className="hover:underline">Help Center</a>
             <a href="tel:+2349157728554" className="hover:underline">+234 915 772 8554</a>
           </div>
         </div>
