@@ -1,8 +1,21 @@
 import { Metadata } from "next";
+import { connectDB } from "@/lib/db";
+import { Resource } from "@/models/Resource";
 
 export const metadata: Metadata = { title: "Resources" };
 
-export default function ResourcesPage() {
+async function getResources() {
+  try {
+    await connectDB();
+    return await Resource.find({ isPublished: true }).sort({ order: 1 }).lean();
+  } catch {
+    return [];
+  }
+}
+
+export default async function ResourcesPage() {
+  const resources = await getResources();
+
   return (
     <>
       <section className="relative h-64 lg:h-80 bg-cover bg-center" style={{ backgroundImage: "url('/images/banners/resources-banner.jpg')" }}>
@@ -20,17 +33,21 @@ export default function ResourcesPage() {
           <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">
             Please feel free to download. If you wish to republish any of these, express permission must be obtained from Aseeb Ventures.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {["Soil Sampling Guide", "Fertilizer Recommendation Charts", "Crop Nutrition Handbook", "Water Quality Standards", "Food Safety Guidelines", "Carbon Farming Overview"].map((title) => (
-              <div key={title} className="bg-crop-gray p-6 rounded-xl flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold">{title}</h3>
-                  <p className="text-sm text-gray-500">PDF Document</p>
+          {resources.length === 0 ? (
+            <p className="text-gray-500 text-center py-12">No resources available yet.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {(resources as any[]).map((r) => (
+                <div key={r._id.toString()} className="bg-crop-gray p-6 rounded-xl flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold">{r.title}</h3>
+                    <p className="text-sm text-gray-500">{r.description || r.fileType?.toUpperCase() + " Document"}</p>
+                  </div>
+                  <a href={r.fileUrl || "#"} className="bg-crop-green text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-crop-green-dark transition-colors">Download</a>
                 </div>
-                <button className="bg-crop-green text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-crop-green-dark transition-colors">Download</button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </>

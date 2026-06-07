@@ -1,10 +1,22 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { Footer } from "@/components/layout/Footer";
+import { connectDB } from "@/lib/db";
+import { Location } from "@/models/Location";
 
 export const metadata: Metadata = { title: "Who We Are" };
 
-export default function AboutPage() {
+async function getLocations() {
+  try {
+    await connectDB();
+    return await Location.find().sort({ order: 1 }).lean();
+  } catch {
+    return [];
+  }
+}
+
+export default async function AboutPage() {
+  const locations = await getLocations();
+
   return (
     <>
       <section className="relative h-64 lg:h-80 bg-cover bg-center" style={{ backgroundImage: "url('/images/banners/about-banner.jpg')" }}>
@@ -19,7 +31,7 @@ export default function AboutPage() {
           <div className="prose prose-lg prose-headings:text-crop-dark max-w-none">
             <h2 className="text-2xl lg:text-3xl font-bold">Center of Analytical & Agronomy Excellence</h2>
             <p className="text-gray-600 leading-relaxed mt-4">
-              Aseeb Ventures is Africa&apos;s leading agricultural equipment sales, agrochemicals, testing laboratory & agronomy advisory services company. We are leaders in soil fertility, water quality, food safety, pesticide residues, fertilizer quality, animal feed, plant disease & nematode laboratory analysis.
+              Aseeb Ventures is Africa's leading agricultural equipment sales, agrochemicals, testing laboratory & agronomy advisory services company. We are leaders in soil fertility, water quality, food safety, pesticide residues, fertilizer quality, animal feed, plant disease & nematode laboratory analysis.
             </p>
             <p className="text-gray-600 leading-relaxed mt-3">
               We are leading farm management consultants offering farm advisory services with advanced tools such as satellite imagery for precision farming, GIS applications for soil mapping & land suitability surveys.
@@ -31,15 +43,19 @@ export default function AboutPage() {
             </p>
 
             <h2 className="text-2xl lg:text-3xl font-bold mt-12">Our Presence</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-              {[{ country: "Nigeria", city: "Ibadan", phone: "+234 805 616 5347" }].map((loc) => (
-                <div key={loc.country} className="bg-crop-gray p-6 rounded-xl">
-                  <h3 className="font-bold text-lg text-crop-green">{loc.country}</h3>
-                  <p className="text-sm text-gray-600">{loc.city}</p>
-                  <p className="text-sm text-gray-600">{loc.phone}</p>
-                </div>
-              ))}
-            </div>
+            {locations.length === 0 ? (
+              <p className="text-gray-500">No locations added yet.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                {(locations as any[]).map((loc) => (
+                  <div key={loc._id.toString()} className="bg-crop-gray p-6 rounded-xl">
+                    <h3 className="font-bold text-lg text-crop-green">{loc.country}</h3>
+                    <p className="text-sm text-gray-600">{loc.city}</p>
+                    <p className="text-sm text-gray-600">{loc.phone}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
