@@ -341,7 +341,14 @@ export function Header({ navItems }: { navItems: any[] }) {
                 </button>
               </div>
               <nav className="space-y-1">
-                {menuItems.map((item) => (
+                <Link
+                  href="/products"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-3 text-sm font-medium hover:bg-white/10 rounded-lg"
+                >
+                  Shop
+                </Link>
+                {menuItems.filter((item) => item.label !== "Home").map((item) => (
                   <div key={item._id}>
                     {item.hasMega ? (
                       <div>
@@ -435,15 +442,6 @@ export function Header({ navItems }: { navItems: any[] }) {
               </div>
               <div className="mt-6 px-4 text-xs text-white/60">
                 © {new Date().getFullYear()} Aseeb Ventures
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-               © {new Date().getFullYear()} Aseeb Ventures
               </div>
             </div>
           </div>
