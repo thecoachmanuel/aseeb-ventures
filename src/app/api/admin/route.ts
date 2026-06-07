@@ -84,7 +84,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(doc || null);
     }
 
-    const docs = await entry.model.find().sort({ [entry.sortField]: entry.sortDir }).lean();
+    const query = entry.model.find().sort({ [entry.sortField]: entry.sortDir });
+    if (resource === "testresults") query.populate("user", "name email");
+    const docs = await query.lean();
     return NextResponse.json(docs);
   } catch (error: any) {
     if (error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -134,6 +136,16 @@ export async function POST(request: NextRequest) {
       }
       if (resource === "users" && !cleanData.password) {
         delete cleanData.password;
+      }
+      if (resource === "testresults" && typeof cleanData.parameters === "string") {
+        try {
+          cleanData.parameters = JSON.parse(cleanData.parameters);
+        } catch {
+          cleanData.parameters = [];
+        }
+      }
+      if (resource === "products" && typeof cleanData.images === "string") {
+        cleanData.images = cleanData.images.split(",").map((s: string) => s.trim()).filter(Boolean);
       }
 
       if (resource === "siteconfig") {

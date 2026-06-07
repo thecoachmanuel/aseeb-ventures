@@ -9,8 +9,8 @@
 }
 
 @layer base {
-  body {
-    @apply text-[#333333];
+  html, body {
+    @apply text-[#333333] overflow-x-hidden;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
 }

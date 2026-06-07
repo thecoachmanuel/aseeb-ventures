@@ -35,15 +35,19 @@ export function LayoutShell({ children, navItems }: { children: React.ReactNode;
           onClose={() => { setPickerOpen(false); setPickerFieldName(null); }}
           onSelect={(url) => {
             if (pickerFieldName) {
-              const input = document.querySelector(`[name="${pickerFieldName}"]`) as HTMLInputElement;
-              if (input) {
-                const nativeSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
-                if (nativeSetter) {
-                  nativeSetter.call(input, url);
-                } else {
-                  input.value = url;
+              if (pickerFieldName.startsWith("_multi_")) {
+                window.dispatchEvent(new CustomEvent("multi-image-selected", { detail: { url, fieldName: pickerFieldName } }));
+              } else {
+                const input = document.querySelector(`[name="${pickerFieldName}"]`) as HTMLInputElement;
+                if (input) {
+                  const nativeSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+                  if (nativeSetter) {
+                    nativeSetter.call(input, url);
+                  } else {
+                    input.value = url;
+                  }
+                  input.dispatchEvent(new Event("input", { bubbles: true }));
                 }
-                input.dispatchEvent(new Event("input", { bubbles: true }));
               }
             }
             setPickerOpen(false);
