@@ -64,10 +64,10 @@ export function HeroSlider({ slides }: { slides: HeroSlideData[] }) {
           <button key={i} onClick={() => goToSlide(i)} className={`w-3 h-3 rounded-full transition-colors ${i === currentSlide ? "bg-white" : "bg-white/40 hover:bg-white/60"}`} aria-label={`Slide ${i + 1}`} />
         ))}
       </div>
-      <button onClick={prevSlide} className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white items-center justify-center transition-colors backdrop-blur-sm" aria-label="Previous slide">
+      <button onClick={prevSlide} className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-transparent hover:bg-white/20 text-white/60 hover:text-white items-center justify-center transition-all hover:backdrop-blur-sm" aria-label="Previous slide">
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
       </button>
-      <button onClick={nextSlide} className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white items-center justify-center transition-colors backdrop-blur-sm" aria-label="Next slide">
+      <button onClick={nextSlide} className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-transparent hover:bg-white/20 text-white/60 hover:text-white items-center justify-center transition-all hover:backdrop-blur-sm" aria-label="Next slide">
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
       </button>
     </section>

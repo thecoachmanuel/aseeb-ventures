@@ -33,7 +33,7 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     if (!session) return;
-    fetch("/api/admin?resource=stats")
+    fetch("/api/admin?resource=stats&type=counts")
       .then((r) => r.json())
       .then((s) => setStats(s))
       .catch(() => {});

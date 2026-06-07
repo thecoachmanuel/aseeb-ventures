@@ -348,13 +348,38 @@ export function AdminContentManager({ resource, title, canCreate = true }: Props
                   <div key={field.name}>
                     <label className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>
                     {imgUrl && (
-                      <img src={imgUrl} alt="" className="w-32 h-32 object-cover rounded-lg border mb-2" />
+                      <div className="relative inline-block mb-2">
+                        <img src={imgUrl} alt="" className="w-32 h-32 object-cover rounded-lg border" />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const input = document.querySelector(`[name="${field.name}"]`) as HTMLInputElement;
+                            if (input) input.value = "";
+                          }}
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                          title="Remove image"
+                        >
+                          ×
+                        </button>
+                      </div>
                     )}
-                    <input type="file" accept="image/*"
-                      onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(field.name, f); }}
-                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
-                    />
-                    <input key={`url-${field.name}`} name={field.name} type="text" placeholder={field.placeholder || "Or paste image URL"} defaultValue={imgUrl} className={`${inputClass} mt-2`} />
+                    <div className="flex flex-wrap gap-2">
+                      <input type="file" accept="image/*"
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(field.name, f); }}
+                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const event = new CustomEvent("open-image-picker", { detail: { fieldName: field.name } });
+                          window.dispatchEvent(event);
+                        }}
+                        className="text-sm bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        Browse Library
+                      </button>
+                    </div>
+                    <input key={`url-${field.name}`} id={`image-field-${field.name}`} name={field.name} type="text" placeholder={field.placeholder || "Or paste image URL"} defaultValue={imgUrl} className={`${inputClass} mt-2`} />
                     {uploadingField === field.name && <span className="text-xs text-emerald-600 mt-1">Uploading...</span>}
                   </div>
                 );

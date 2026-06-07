@@ -1,13 +1,27 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { AdminSidebar } from "./AdminSidebar";
+import { ImagePickerModal } from "../admin/ImagePickerModal";
 
 export function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerFieldName, setPickerFieldName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      setPickerFieldName(detail.fieldName);
+      setPickerOpen(true);
+    };
+    window.addEventListener("open-image-picker", handler);
+    return () => window.removeEventListener("open-image-picker", handler);
+  }, []);
 
   if (isAdmin) {
     return (
@@ -16,6 +30,26 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
         <main className="flex-1 lg:ml-64 pt-14 lg:pt-0">
           <div className="px-3 sm:px-4 lg:px-8 py-4 lg:py-8 max-w-7xl">{children}</div>
         </main>
+        <ImagePickerModal
+          isOpen={pickerOpen}
+          onClose={() => { setPickerOpen(false); setPickerFieldName(null); }}
+          onSelect={(url) => {
+            if (pickerFieldName) {
+              const input = document.querySelector(`[name="${pickerFieldName}"]`) as HTMLInputElement;
+              if (input) {
+                const nativeSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+                if (nativeSetter) {
+                  nativeSetter.call(input, url);
+                } else {
+                  input.value = url;
+                }
+                input.dispatchEvent(new Event("input", { bubbles: true }));
+              }
+            }
+            setPickerOpen(false);
+            setPickerFieldName(null);
+          }}
+        />
       </div>
     );
   }

@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     const resource = searchParams.get("resource");
     const id = searchParams.get("id");
 
-    if (resource === "stats") {
+    if (resource === "stats" && searchParams.get("type") === "counts") {
       const statKeys = ["services", "blog", "contacts", "testimonials", "stories", "subscribers", "products"] as const;
       const keyMap: Record<string, string> = { blog: "blogPosts", stories: "stories", services: "services", contacts: "contacts", testimonials: "testimonials", subscribers: "subscribers", products: "products" };
       const counts = await Promise.all(
