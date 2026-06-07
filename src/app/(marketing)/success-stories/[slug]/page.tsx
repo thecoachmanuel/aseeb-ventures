@@ -1,57 +1,28 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connectDB } from "@/lib/db";
+import { SuccessStory } from "@/models/SuccessStory";
 
-const stories: Record<string, { title: string; content: string; farmerName?: string; location?: string; crop?: string }> = {
-  "barley-farming-in-kenya": {
-    title: "How We Achieved Massive 11.84 ton/ha Barley Yield",
-    farmerName: "Various Farmers",
-    location: "Jos, Plateau State",
-    crop: "Barley",
-    content: `Barley farming in Nigeria is setting new yield records as witnessed in various barley trials conducted in Jos, Plateau State. Trials are a huge part of making progress in farming, and back in September 2018 we harvested something truly special. A plot of barley — 10 metres long by 2 metres in length — that achieved an incredible 11.84 tons per hectare.
-
-How Did We Achieve This?
-The remarkable yield was achieved through a combination of factors:
-- Comprehensive soil testing and analysis before planting
-- Customized fertilizer blending based on soil nutrient maps
-- Precision planting with optimal seed rates
-- Timely pest and disease monitoring and management
-- Proper irrigation scheduling
-- Regular plant tissue analysis to fine-tune nutrition
-
-The Aseeb Ventures team worked closely with the farmers throughout the season, providing technical advice based on real-time data from soil and plant analysis. This is a perfect example of what can be achieved when science meets practical farming.
-
-If you're interested in improving your barley yields, contact Aseeb Ventures for comprehensive soil testing and tailored agronomic advice.`,
-  },
-  "soil-testing-for-smallscale-farmers-in-malawi": {
-    title: "Soil Testing For Smallscale Farmers In Malawi",
-    farmerName: "Smallscale Farmers",
-    location: "Malawi",
-    crop: "Various",
-    content: `Our on-site AI based soil testing platform has already reached 90,000 smallholder farmers across Africa, bringing affordable and accessible soil analysis to those who need it most.
-
-The Malawi project demonstrated that smallscale farmers can benefit enormously from soil testing. By understanding their soil's nutrient status, farmers were able to:
-- Apply the right type and amount of fertilizer
-- Save money by avoiding unnecessary fertilizer application
-- Increase yields by 30-50% in many cases
-- Improve soil health through balanced nutrition
-
-The mobile soil testing platform uses advanced spectroscopy and AI algorithms to provide instant soil analysis results. Farmers receive personalized fertilizer recommendations via SMS, making the information accessible even in remote areas without internet connectivity.
-
-This project shows that technology can bridge the gap between large-scale commercial farming and smallholder agriculture. Aseeb Ventures is committed to continuing this work and reaching even more farmers across Africa.`,
-  },
-};
+async function getStory(slug: string) {
+  try {
+    await connectDB();
+    return await SuccessStory.findOne({ slug, isPublished: true }).lean();
+  } catch {
+    return null;
+  }
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const story = stories[slug];
+  const story = await getStory(slug);
   if (!story) return { title: "Story Not Found" };
   return { title: story.title };
 }
 
 export default async function SuccessStoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const story = stories[slug];
+  const story = await getStory(slug);
   if (!story) notFound();
 
   return (
