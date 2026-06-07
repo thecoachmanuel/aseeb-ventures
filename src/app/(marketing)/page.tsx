@@ -73,7 +73,7 @@ const slides = [
   {
     title: "Internationally Accredited Laboratory Services",
     description: "20 years of delivering high quality laboratory & advisory services for agriculture, environmental monitoring and food safety sectors in Africa.",
-    cta: { label: "READ MORE", href: "/services/soil-testing" },
+    cta: { label: "READ MORE", href: "/services/laboratory-services" },
     image: "/images/hero/hero-banner-3.jpg",
   },
   {
