@@ -1,8 +1,18 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 export default function ContactPage() {
+  const [locations, setLocations] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/content?resource=locations")
+      .then((r) => r.json())
+      .then((d) => setLocations(Array.isArray(d) ? d : []))
+      .catch(() => {});
+  }, []);
+
   return (
     <>
       <section className="relative h-64 lg:h-80 bg-cover bg-center" style={{ backgroundImage: "url('/images/banners/contact-banner.jpg')" }}>
@@ -21,7 +31,6 @@ export default function ContactPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Contact form */}
             <div>
               <h2 className="text-2xl font-bold mb-6">Send us a Message</h2>
               <form
@@ -71,22 +80,23 @@ export default function ContactPage() {
               </form>
             </div>
 
-            {/* Contact info */}
             <div className="space-y-8">
-              {[
-                { country: "Nigeria", city: "Ibadan", address: "Shop 21 Lagelu Shopping Complex, Opposite Dizengoff, Monatan", phone: "+234 805 616 5347", email: "aseebventure1@gmail.com" },
-              ].map((loc) => (
-                <div key={loc.country} className="bg-crop-gray p-6 rounded-xl">
-                  <h3 className="font-bold text-lg text-crop-green">{loc.country} — {loc.city}</h3>
-                  {loc.address && <p className="text-sm text-gray-600 mt-1">{loc.address}</p>}
-                  <p className="text-sm text-gray-600">
-                    <a href={`tel:${loc.phone}`} className="hover:text-crop-green">{loc.phone}</a>
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <a href={`mailto:${loc.email}`} className="hover:text-crop-green">{loc.email}</a>
-                  </p>
-                </div>
-              ))}
+              {locations.length === 0 ? (
+                <p className="text-gray-500">Loading contact info...</p>
+              ) : (
+                locations.map((loc) => (
+                  <div key={loc._id} className="bg-crop-gray p-6 rounded-xl">
+                    <h3 className="font-bold text-lg text-crop-green">{loc.country} — {loc.city}</h3>
+                    {loc.address && <p className="text-sm text-gray-600 mt-1">{loc.address}</p>}
+                    <p className="text-sm text-gray-600">
+                      <a href={`tel:${loc.phone}`} className="hover:text-crop-green">{loc.phone}</a>
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <a href={`mailto:${loc.email}`} className="hover:text-crop-green">{loc.email}</a>
+                    </p>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
