@@ -129,10 +129,10 @@ async function seedAll() {
     });
 
     const navRoots = await NavItem.insertMany([
-      { label: "Home", href: "/", hasMega: false, order: 0 },
-      { label: "About Us", href: "/about", hasMega: false, order: 1 },
-      { label: "Services", href: "#", hasMega: true, order: 2 },
-      { label: "Articles", href: "#", hasMega: true, order: 3 },
+      { label: "About Us", href: "/about", hasMega: false, order: 0 },
+      { label: "Services", href: "#", hasMega: true, order: 1 },
+      { label: "Articles", href: "#", hasMega: true, order: 2 },
+      { label: "Shop", href: "/products", hasMega: false, order: 3 },
       { label: "Resources", href: "/resources", hasMega: false, order: 4 },
       { label: "Contact Us", href: "/contact", hasMega: false, order: 5 },
     ]);

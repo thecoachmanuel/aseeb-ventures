@@ -139,7 +139,13 @@ export function Header({ navItems }: { navItems: any[] }) {
 
             {/* Desktop nav */}
             <nav className="hidden lg:flex items-center gap-1">
-              {menuItems.map((item) => (
+              <Link
+                href="/products"
+                className="px-3 py-2 text-sm font-medium text-[#009050] hover:text-[#007a40] transition-colors rounded-md"
+              >
+                Shop
+              </Link>
+              {menuItems.filter((item) => item.label !== "Home").map((item) => (
                 <div
                   key={item._id}
                   className="relative"
@@ -148,10 +154,7 @@ export function Header({ navItems }: { navItems: any[] }) {
                 >
                   <Link
                     href={item.href}
-                    className={cn(
-                      "px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#009050] transition-colors rounded-md",
-                      item.label === "Home" && "text-[#009050]"
-                    )}
+                    className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#009050] transition-colors rounded-md"
                   >
                     {item.label}
                   </Link>
@@ -432,6 +435,15 @@ export function Header({ navItems }: { navItems: any[] }) {
               </div>
               <div className="mt-6 px-4 text-xs text-white/60">
                 © {new Date().getFullYear()} Aseeb Ventures
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+               © {new Date().getFullYear()} Aseeb Ventures
               </div>
             </div>
           </div>
