@@ -256,7 +256,7 @@ export function Header() {
                 "grid gap-6",
                 activeMegaItem.label === "Articles" ? "grid-cols-3" : "grid-cols-3"
               )}>
-                {activeMegaItem.megaContent.map((sub, idx) => (
+                {activeMegaItem.megaContent.map((sub: any, idx: number) => (
                   <Link
                     key={idx}
                     href={sub.href}
@@ -365,7 +365,7 @@ export function Header() {
                         </button>
                         {mobileExpanded[item._id] && (
                           <div className="space-y-1 ml-2 pb-1">
-                            {item.megaContent?.map((sub, idx) => (
+                            {item.megaContent?.map((sub: any, idx: number) => (
                               <Link
                                 key={idx}
                                 href={sub.href}
