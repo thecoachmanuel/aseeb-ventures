@@ -6,7 +6,7 @@ const { Nutrient } = require("../src/models/Nutrient");
 const { Resource } = require("../src/models/Resource");
 const { LegalPage } = require("../src/models/LegalPage");
 const { IWantToOption } = require("../src/models/IWantToOption");
-const { Location } = require("../src/models/Location");
+const { Location: LocationModel } = require("../src/models/Location");
 const { NavItem } = require("../src/models/NavItem");
 const { SiteConfig } = require("../src/models/SiteConfig");
 const { Service } = require("../src/models/Service");
@@ -125,7 +125,7 @@ async function seed() {
     Resource.deleteMany({}),
     LegalPage.deleteMany({}),
     IWantToOption.deleteMany({}),
-    Location.deleteMany({}),
+    LocationModel.deleteMany({}),
     NavItem.deleteMany({}),
     SiteConfig.deleteMany({}),
     Service.deleteMany({}),
@@ -144,7 +144,7 @@ async function seed() {
   await Resource.insertMany(resourcesData);
   await LegalPage.insertMany(legalPages);
   await IWantToOption.insertMany(iwanttoOptions);
-  await Location.insertMany(locations);
+  await LocationModel.insertMany(locations);
   await SiteConfig.create(siteConfig);
 
   const servicesNav = await NavItem.findOne({ label: "Services" });
