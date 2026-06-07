@@ -5,105 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-const menuItems = [
-  {
-    id: "home",
-    label: "Home",
-    href: "/",
-    hasMega: false,
-  },
-  {
-    id: "about",
-    label: "About Us",
-    href: "/about",
-    hasMega: false,
-  },
-  {
-    id: "services",
-    label: "Services",
-    href: "#",
-    hasMega: true,
-    megaContent: [
-      {
-        icon: "/icons/lab_services.svg",
-        title: "Laboratory Services",
-        description: "We offer wide range, state of the art tests in Agricultural…",
-        href: "/services/laboratory-services",
-      },
-      {
-        icon: "/icons/advisory_services.svg",
-        title: "Farm Advisory Services",
-        description: "Best Technical off Farm and On Farm Advice on soil…",
-        href: "/services/farm-advisory-services",
-      },
-      {
-        icon: "/icons/agTech_services.svg",
-        title: "AgTech Solutions",
-        description: "We offer wide range of technologies and techniques…",
-        href: "/services/agtech-solutions",
-      },
-    ],
-  },
-  {
-    id: "articles",
-    label: "Articles",
-    href: "#",
-    hasMega: true,
-    megaContent: [
-      {
-        icon: "/icons/agrnonomy_articles.svg",
-        title: "Agronomy Articles",
-        description: "Articles on crop disease, protection, soil science…",
-        href: "/blog/category/agronomy-articles",
-      },
-      {
-        icon: "/icons/nutrition_knowledge.svg",
-        title: "Nutritional Knowledge",
-        description: "Plants balance nutrition with a healthy dose of macronutrients…",
-        href: "/nutritional-knowledge",
-      },
-      {
-        icon: "/icons/how_to_videos.svg",
-        title: "How to Videos",
-        description: "Handy videos about crop trials, crop protection and best farming…",
-        href: "/blog/category/how-to-videos",
-      },
-      {
-        icon: "/icons/success_stories.svg",
-        title: "Success Stories",
-        description: "Real stories, real farmers success with a little help from Aseeb Ventures…",
-        href: "/success-stories",
-      },
-      {
-        icon: "/icons/faqs.svg",
-        title: "FAQs",
-        description: "Aseeb Ventures help desk. Search the knowledge base…",
-        href: "https://aseeb-ventures.vercel.app",
-      },
-      {
-        icon: "/icons/news_events.svg",
-        title: "News & Events",
-        description: "Latest news about Aseeb Ventures, learn of upcoming events, trainings…",
-        href: "/blog/category/news",
-      },
-    ],
-  },
-  {
-    id: "resources",
-    label: "Resources",
-    href: "/resources",
-    hasMega: false,
-  },
-  {
-    id: "contact",
-    label: "Contact Us",
-    href: "/contact",
-    hasMega: false,
-  },
-];
-
 export function Header() {
   const router = useRouter();
+  const [menuItems, setMenuItems] = useState<any[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -117,6 +21,13 @@ export function Header() {
   const avatarRef = useRef<HTMLDivElement | null>(null);
   const megaTimeout = useRef<NodeJS.Timeout | null>(null);
   const megaPanelRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    fetch("/api/content?resource=navigation")
+      .then((r) => r.json())
+      .then((d) => setMenuItems(Array.isArray(d) ? d : []))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -152,7 +63,7 @@ export function Header() {
     megaTimeout.current = setTimeout(() => setActiveMegaMenu(null), 300);
   };
 
-  const activeMegaItem = menuItems.find((item) => item.id === activeMegaMenu);
+  const activeMegaItem = menuItems.find((item) => item._id === activeMegaMenu);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -237,16 +148,16 @@ export function Header() {
             <nav className="hidden lg:flex items-center gap-1">
               {menuItems.map((item) => (
                 <div
-                  key={item.id}
+                  key={item._id}
                   className="relative"
-                  onMouseEnter={() => item.hasMega ? handleMegaEnter(item.id) : setActiveMegaMenu(null)}
+                  onMouseEnter={() => item.hasMega ? handleMegaEnter(item._id) : setActiveMegaMenu(null)}
                   onMouseLeave={() => item.hasMega && handleMegaLeave()}
                 >
                   <Link
                     href={item.href}
                     className={cn(
                       "px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#009050] transition-colors rounded-md",
-                      item.id === "home" && "text-[#009050]"
+                      item.label === "Home" && "text-[#009050]"
                     )}
                   >
                     {item.label}
@@ -343,7 +254,7 @@ export function Header() {
             <div className="max-w-7xl mx-auto px-4 py-8">
               <div className={cn(
                 "grid gap-6",
-                activeMegaItem.id === "articles" ? "grid-cols-3" : "grid-cols-3"
+                activeMegaItem.label === "Articles" ? "grid-cols-3" : "grid-cols-3"
               )}>
                 {activeMegaItem.megaContent.map((sub, idx) => (
                   <Link
@@ -435,16 +346,16 @@ export function Header() {
               </div>
               <nav className="space-y-1">
                 {menuItems.map((item) => (
-                  <div key={item.id}>
+                  <div key={item._id}>
                     {item.hasMega ? (
                       <div>
                         <button
-                          onClick={() => setMobileExpanded((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
+                          onClick={() => setMobileExpanded((prev) => ({ ...prev, [item._id]: !prev[item._id] }))}
                           className="flex items-center justify-between w-full px-4 py-3 font-medium text-sm uppercase tracking-wide hover:bg-white/10 rounded-lg"
                         >
                           <span>{item.label}</span>
                           <svg
-                            className={cn("w-4 h-4 transition-transform", mobileExpanded[item.id] && "rotate-180")}
+                            className={cn("w-4 h-4 transition-transform", mobileExpanded[item._id] && "rotate-180")}
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -452,7 +363,7 @@ export function Header() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                           </svg>
                         </button>
-                        {mobileExpanded[item.id] && (
+                        {mobileExpanded[item._id] && (
                           <div className="space-y-1 ml-2 pb-1">
                             {item.megaContent?.map((sub, idx) => (
                               <Link
