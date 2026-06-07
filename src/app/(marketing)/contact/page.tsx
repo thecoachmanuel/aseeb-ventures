@@ -61,6 +61,8 @@ export default function ContactPage() {
                   <option value="advisory">Farm Advisory</option>
                   <option value="agtech">AgTech Solutions</option>
                   <option value="training">Agronomy Training</option>
+                  <option value="agrochemicals">Agrochemicals &amp; Equipment Sales</option>
+                  <option value="techno-consult">Techno Consult</option>
                 </select>
                 <textarea name="message" rows={5} placeholder="Your Message *" required className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-crop-green focus:border-transparent" />
                 <button type="submit" className="bg-crop-green text-white px-8 py-3 rounded-lg font-semibold hover:bg-crop-green-dark transition-colors">
