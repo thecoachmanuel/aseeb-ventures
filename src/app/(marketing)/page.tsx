@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
@@ -177,6 +177,27 @@ function HomePageContent() {
     setCurrentSlide(index);
   }, []);
 
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % slideCount);
+  }, [slideCount]);
+
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev - 1 + slideCount) % slideCount);
+  }, [slideCount]);
+
+  // Touch swipe
+  const touchStartRef = useRef(0);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = e.touches[0].clientX;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const diff = touchStartRef.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) nextSlide();
+      else prevSlide();
+    }
+  };
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slideCount);
@@ -187,7 +208,11 @@ function HomePageContent() {
   return (
     <>
       {/* Hero Slider */}
-      <section className="relative h-[500px] lg:h-[600px] bg-gray-900 overflow-hidden">
+      <section
+        className="relative h-[500px] lg:h-[600px] bg-gray-900 overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {slides.map((slide, i) => (
           <div
             key={i}
@@ -229,6 +254,25 @@ function HomePageContent() {
             />
           ))}
         </div>
+        {/* Arrow buttons */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-colors backdrop-blur-sm"
+          aria-label="Previous slide"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          onClick={nextSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-colors backdrop-blur-sm"
+          aria-label="Next slide"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </section>
 
       {/* "I want to know" filter */}
@@ -275,7 +319,7 @@ function HomePageContent() {
                 key={i}
                 href={pillar.href}
                 className="group relative rounded-2xl overflow-hidden h-[400px] bg-cover bg-center"
-                style={{ backgroundImage: i === 0 && pillar.image ? `url(${pillar.image})` : undefined }}
+                style={{ backgroundImage: pillar.image ? `url(${pillar.image})` : undefined }}
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:from-black/90 transition-colors" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
