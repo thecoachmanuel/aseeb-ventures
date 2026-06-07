@@ -144,7 +144,7 @@ export function Footer() {
             <div>
               <h4 className="font-semibold text-lg mb-4">Contact Details</h4>
               <p className="text-gray-400 text-sm mb-4">
-                Aseeb Ventures Ltd, Ibadan – Nigeria
+                Aseeb Ventures Ltd, Shop 21 Lagelu Shopping Complex, Opposite Dizengoff, Monatan, Ibadan – Nigeria
               </p>
               <div className="space-y-4 text-sm text-gray-400">
                 {locations.map((loc) => (
