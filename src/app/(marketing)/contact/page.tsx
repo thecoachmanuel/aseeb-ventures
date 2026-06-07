@@ -74,7 +74,7 @@ export default function ContactPage() {
             {/* Contact info */}
             <div className="space-y-8">
               {[
-                { country: "Nigeria", city: "Ibadan", address: "Plot 12, Oluyole Industrial Estate", phone: "+234 803 978 4205", email: "info@aseeb-ventures.vercel.app" },
+                { country: "Nigeria", city: "Ibadan", address: "Shop 21 Lagelu Shopping Complex, Opposite Dizengoff, Monatan", phone: "+234 805 616 5347", email: "aseebventure1@gmail.com" },
               ].map((loc) => (
                 <div key={loc.country} className="bg-crop-gray p-6 rounded-xl">
                   <h3 className="font-bold text-lg text-crop-green">{loc.country} — {loc.city}</h3>
