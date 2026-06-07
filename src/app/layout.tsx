@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { LayoutShell } from "@/components/layout/LayoutShell";
+import { connectDB } from "@/lib/db";
+import { NavItem } from "@/models/NavItem";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,11 +25,42 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+async function getNavItems() {
+  try {
+    await connectDB();
+    const [items, children] = await Promise.all([
+      NavItem.find({ isActive: true, parentId: null }).sort({ order: 1 }).lean(),
+      NavItem.find({ isActive: true, parentId: { $ne: null } }).sort({ order: 1 }).lean(),
+    ]);
+    return items.map((item: any) => {
+      const itemChildren = children.filter(
+        (c: any) => c.parentId?.toString() === item._id.toString()
+      );
+      return {
+        ...item,
+        _id: item._id.toString(),
+        megaContent: itemChildren.length > 0
+          ? itemChildren.map((c: any) => ({
+              icon: c.icon,
+              title: c.label,
+              description: c.description,
+              href: c.href,
+            }))
+          : undefined,
+      };
+    });
+  } catch {
+    return [];
+  }
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const navItems = await getNavItems();
+
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col bg-white antialiased">
-        <LayoutShell>{children}</LayoutShell>
+        <LayoutShell navItems={navItems}>{children}</LayoutShell>
       </body>
     </html>
   );

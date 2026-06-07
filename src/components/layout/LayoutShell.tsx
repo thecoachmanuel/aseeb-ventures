@@ -7,7 +7,7 @@ import { Footer } from "./Footer";
 import { AdminSidebar } from "./AdminSidebar";
 import { ImagePickerModal } from "../admin/ImagePickerModal";
 
-export function LayoutShell({ children }: { children: React.ReactNode }) {
+export function LayoutShell({ children, navItems }: { children: React.ReactNode; navItems: any[] }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -56,7 +56,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <Header />
+      <Header navItems={navItems} />
       <main className="flex-1">{children}</main>
       <Footer />
       <a

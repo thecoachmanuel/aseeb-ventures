@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-export function Header() {
+export function Header({ navItems }: { navItems: any[] }) {
   const router = useRouter();
-  const [menuItems, setMenuItems] = useState<any[]>([]);
+  const [menuItems] = useState<any[]>(navItems);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -21,13 +21,6 @@ export function Header() {
   const avatarRef = useRef<HTMLDivElement | null>(null);
   const megaTimeout = useRef<NodeJS.Timeout | null>(null);
   const megaPanelRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    fetch("/api/content?resource=navigation")
-      .then((r) => r.json())
-      .then((d) => setMenuItems(Array.isArray(d) ? d : []))
-      .catch(() => {});
-  }, []);
 
   useEffect(() => {
     fetch("/api/auth/me")
