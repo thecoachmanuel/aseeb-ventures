@@ -20,6 +20,10 @@ const navItems = [
   { id: "resources", label: "Resources", href: "/admin/resources", icon: "M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" },
   { id: "legalpages", label: "Legal Pages", href: "/admin/legalpages", icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" },
   { id: "iwantto", label: "I Want To", href: "/admin/iwantto", icon: "M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+  { divider: true, label: "Media" },
+  { id: "images", label: "Images", href: "/admin/images", icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" },
+  { divider: true, label: "Ecommerce" },
+  { id: "products", label: "Products", href: "/admin/products", icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" },
   { divider: true, label: "Settings" },
   { id: "navigation", label: "Navigation", href: "/admin/navigation", icon: "M4 6h16M4 12h16M4 18h16" },
   { id: "locations", label: "Locations", href: "/admin/locations", icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" },
@@ -29,10 +33,14 @@ const navItems = [
   { id: "users", label: "Users", href: "/admin/users", icon: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" },
 ];
 
+const pageTitleMap: Record<string, string> = {};
+navItems.forEach((item) => { if (!item.divider) pageTitleMap[item.href!] = item.label; });
+
 export function AdminSidebar() {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<{ name: string; role: string } | null>(null);
+  const pageTitle = pageTitleMap[pathname] || pageTitleMap[Object.keys(pageTitleMap).find(k => pathname.startsWith(k)) || ""] || "Dashboard";
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -137,8 +145,8 @@ export function AdminSidebar() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
-        <Link href="/admin" className="text-white font-semibold ml-3">
-          <span className="text-emerald-400">Aseeb</span> CMS
+        <Link href="/admin" className="text-white font-semibold ml-3 text-sm">
+          {pageTitle}
         </Link>
         <div className="flex-1" />
         <Link href="/" className="text-xs text-gray-400 hover:text-white mr-3">View Site</Link>

@@ -14,7 +14,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
       <div className="min-h-screen bg-gray-50 flex">
         <AdminSidebar />
         <main className="flex-1 lg:ml-64 pt-14 lg:pt-0">
-          <div className="p-4 lg:p-8 max-w-7xl">{children}</div>
+          <div className="px-3 sm:px-4 lg:px-8 py-4 lg:py-8 max-w-7xl">{children}</div>
         </main>
       </div>
     );

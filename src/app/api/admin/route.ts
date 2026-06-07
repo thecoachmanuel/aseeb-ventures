@@ -21,6 +21,7 @@ import { Resource } from "@/models/Resource";
 import { LegalPage } from "@/models/LegalPage";
 import { IWantToOption } from "@/models/IWantToOption";
 import { TestResult } from "@/models/TestResult";
+import { Product } from "@/models/Product";
 
 const resourceMap: Record<string, { model: any; sortField: string; sortDir: 1 | -1 }> = {
   services: { model: Service, sortField: "createdAt", sortDir: -1 },
@@ -41,6 +42,7 @@ const resourceMap: Record<string, { model: any; sortField: string; sortDir: 1 | 
   legalpages: { model: LegalPage, sortField: "createdAt", sortDir: -1 },
   iwantto: { model: IWantToOption, sortField: "order", sortDir: 1 },
   testresults: { model: TestResult, sortField: "createdAt", sortDir: -1 },
+  products: { model: Product, sortField: "createdAt", sortDir: -1 },
 };
 
 async function requireAdmin() {
@@ -59,10 +61,12 @@ export async function GET(request: NextRequest) {
     const id = searchParams.get("id");
 
     if (resource === "stats") {
+      const statKeys = ["services", "blog", "contacts", "testimonials", "stories", "subscribers", "products"] as const;
+      const keyMap: Record<string, string> = { blog: "blogPosts", stories: "stories", services: "services", contacts: "contacts", testimonials: "testimonials", subscribers: "subscribers", products: "products" };
       const counts = await Promise.all(
-        Object.entries(resourceMap).map(async ([key, { model }]) => ({
-          key,
-          count: await model.countDocuments(),
+        statKeys.map(async (key) => ({
+          key: keyMap[key],
+          count: await resourceMap[key].model.countDocuments(),
         }))
       );
       const out: Record<string, number> = {};

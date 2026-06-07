@@ -1,189 +1,43 @@
-"use client";
-
-import { useState, useEffect, useCallback, useRef, Suspense } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-
-function SearchResultsSection() {
-  const searchParams = useSearchParams();
-  const query = searchParams.get("q");
-  const [results, setResults] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!query) return;
-    setLoading(true);
-    fetch(`/api/search?q=${encodeURIComponent(query)}`)
-      .then((r) => r.json())
-      .then((d) => { setResults(d.results || []); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, [query]);
-
-  if (!query) return null;
-
-  return (
-    <section className="py-12 bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4">
-        <h2 className="text-2xl font-bold mb-6">
-          Search results for &ldquo;{query}&rdquo;
-        </h2>
-        {loading ? (
-          <div className="flex justify-center py-8">
-            <div className="w-8 h-8 border-4 border-[#009050] border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : results.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">No results found.</p>
-        ) : (
-          <div className="space-y-4">
-            {results.map((r, i) => (
-              <Link
-                key={i}
-                href={r.url}
-                className="block bg-white rounded-xl p-6 shadow-sm border hover:border-[#009050] transition-colors"
-              >
-                <div className="flex items-center gap-2 mb-1">
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded ${r.type === "service" ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}>
-                    {r.type === "service" ? "Service" : "Article"}
-                  </span>
-                </div>
-                <h3 className="text-lg font-semibold">{r.title}</h3>
-                <p className="text-sm text-gray-600 mt-1">{r.excerpt?.substring(0, 200)}</p>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
-  );
-}
+import { connectDB } from "@/lib/db";
+import { HeroSlide } from "@/models/HeroSlide";
+import { Pillar } from "@/models/Pillar";
+import { Stat } from "@/models/Stat";
+import { SuccessStory } from "@/models/SuccessStory";
+import { BlogPost } from "@/models/BlogPost";
+import { IWantToOption } from "@/models/IWantToOption";
+import { HeroSlider } from "./HeroSlider";
+import { IWantToKnow } from "./IWantToKnow";
+import { SearchResultsSection } from "./SearchResultsSection";
 
 export default function HomePage() {
   return (
-    <Suspense fallback={null}>
-      <SearchResultsSection />
+    <>
+      <Suspense fallback={null}>
+        <SearchResultsSection />
+      </Suspense>
       <HomePageContent />
-    </Suspense>
+    </>
   );
 }
 
-function HomePageContent() {
-  const [slides, setSlides] = useState<any[]>([]);
-  const [pillars, setPillars] = useState<any[]>([]);
-  const [stats, setStats] = useState<any[]>([]);
-  const [stories, setStories] = useState<any[]>([]);
-  const [blogPosts, setBlogPosts] = useState<any[]>([]);
-  const [iwantto, setIwantto] = useState<any[]>([]);
-  const [loaded, setLoaded] = useState(false);
-
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  useEffect(() => {
-    Promise.all([
-      fetch("/api/content?resource=heroslides").then(r => r.json()),
-      fetch("/api/content?resource=pillars").then(r => r.json()),
-      fetch("/api/content?resource=stats").then(r => r.json()),
-      fetch("/api/content?resource=stories").then(r => r.json()),
-      fetch("/api/content?resource=blog").then(r => r.json()),
-      fetch("/api/content?resource=iwantto").then(r => r.json()),
-    ])
-      .then(([s, p, st, ss, b, it]) => {
-        setSlides(Array.isArray(s) ? s : []);
-        setPillars(Array.isArray(p) ? p : []);
-        setStats(Array.isArray(st) ? st : []);
-        setStories(Array.isArray(ss) ? ss : []);
-        setBlogPosts(Array.isArray(b) ? b : []);
-        setIwantto(Array.isArray(it) ? it : []);
-        setLoaded(true);
-      })
-      .catch(() => setLoaded(true));
-  }, []);
-
-  const slideCount = slides.length || 1;
-
-  const goToSlide = useCallback((index: number) => setCurrentSlide(index), []);
-  const nextSlide = useCallback(() => setCurrentSlide(p => (p + 1) % slideCount), [slideCount]);
-  const prevSlide = useCallback(() => setCurrentSlide(p => (p - 1 + slideCount) % slideCount), [slideCount]);
-
-  const touchStartRef = useRef(0);
-  const handleTouchStart = (e: React.TouchEvent) => { touchStartRef.current = e.touches[0].clientX; };
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const diff = touchStartRef.current - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) { if (diff > 0) nextSlide(); else prevSlide(); }
-  };
-
-  useEffect(() => {
-    if (slides.length <= 1) return;
-    const timer = setInterval(() => setCurrentSlide(p => (p + 1) % slides.length), 5000);
-    return () => clearInterval(timer);
-  }, [slides.length]);
-
-  if (!loaded) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#009050] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  const currentSlideData = slides[currentSlide] || {};
+async function HomePageContent() {
+  await connectDB();
+  const [slides, pillars, stats, stories, posts, iwantto] = await Promise.all([
+    HeroSlide.find({ isActive: true }).sort({ order: 1 }).lean(),
+    Pillar.find({ isActive: true }).sort({ order: 1 }).lean(),
+    Stat.find({ isActive: true }).sort({ order: 1 }).lean(),
+    SuccessStory.find({ isPublished: true }).select("title slug excerpt image farmerName location crop").sort({ createdAt: -1 }).lean(),
+    BlogPost.find({ isPublished: true }).select("title slug author publishedAt excerpt featuredImage categories tags").sort({ publishedAt: -1 }).limit(3).lean(),
+    IWantToOption.find({ isActive: true }).sort({ order: 1 }).lean(),
+  ]);
 
   return (
     <>
-      {/* Hero Slider */}
-      <section
-        className="relative h-[500px] lg:h-[600px] bg-gray-900 overflow-hidden"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        {slides.map((slide, i) => (
-          <div
-            key={slide._id || i}
-            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ${i === currentSlide ? "opacity-100" : "opacity-0"}`}
-            style={{ backgroundImage: slide.image ? `url(${slide.image})` : undefined }}
-          />
-        ))}
-        {!currentSlideData.image && <div className="absolute inset-0 bg-crop-dark" />}
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="relative h-full flex items-center">
-          <div className="max-w-7xl mx-auto px-4 w-full">
-            <div className="max-w-2xl text-white transition-all duration-500" key={currentSlide}>
-              <h1 className="text-3xl lg:text-5xl font-bold mb-4 leading-tight">{currentSlideData.title}</h1>
-              <p className="text-lg lg:text-xl text-white/90 mb-8">{currentSlideData.description}</p>
-              <Link href={currentSlideData.ctaHref || "#"} className="banner_cta">{currentSlideData.ctaLabel || "READ MORE"}</Link>
-            </div>
-          </div>
-        </div>
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-          {slides.map((_, i) => (
-            <button key={i} onClick={() => goToSlide(i)} className={`w-3 h-3 rounded-full transition-colors ${i === currentSlide ? "bg-white" : "bg-white/40 hover:bg-white/60"}`} aria-label={`Slide ${i + 1}`} />
-          ))}
-        </div>
-        <button onClick={prevSlide} className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white items-center justify-center transition-colors backdrop-blur-sm" aria-label="Previous slide">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-        </button>
-        <button onClick={nextSlide} className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white items-center justify-center transition-colors backdrop-blur-sm" aria-label="Next slide">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-        </button>
-      </section>
+      <HeroSlider slides={JSON.parse(JSON.stringify(slides))} />
 
-      {/* I want to know */}
-      <section className="py-8 bg-crop-gray">
-        <div className="max-w-4xl mx-auto px-4">
-          <form className="flex flex-col sm:flex-row gap-3" onSubmit={(e) => { e.preventDefault(); }}>
-            <select
-              className="flex-1 px-4 py-3.5 rounded-lg border border-gray-200 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-crop-green focus:border-transparent"
-              onChange={(e) => { if (e.target.value) window.location.href = e.target.value; }}
-              defaultValue=""
-            >
-              <option value="" disabled>I would like to know...</option>
-              {iwantto.map((o: any) => (
-                <option key={o._id} value={o.href}>{o.label}</option>
-              ))}
-            </select>
-            <button type="submit" className="bg-crop-green text-white px-8 py-3.5 rounded-lg font-semibold hover:bg-crop-green-dark transition-colors">Get Advice</button>
-          </form>
-        </div>
-      </section>
+      <IWantToKnow options={JSON.parse(JSON.stringify(iwantto))} />
 
       {/* Center of Excellence */}
       <section className="section bg-white">
@@ -198,7 +52,7 @@ function HomePageContent() {
             </p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {pillars.map((pillar) => (
+            {pillars.map((pillar: any) => (
               <Link key={pillar._id} href={pillar.href} className="group relative rounded-2xl overflow-hidden h-[400px] bg-cover bg-center" style={{ backgroundImage: pillar.image ? `url(${pillar.image})` : undefined }}>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:from-black/90 transition-colors" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
@@ -216,7 +70,7 @@ function HomePageContent() {
       <section className="bg-[#009050] text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-            {stats.map((stat) => (
+            {stats.map((stat: any) => (
               <div key={stat._id}>
                 <p className="text-3xl lg:text-4xl font-bold mb-1">{stat.value}</p>
                 <p className="text-sm text-white/80">{stat.label}</p>
@@ -254,7 +108,7 @@ function HomePageContent() {
             <p className="text-gray-600">Find out more about how we are working with farmers to improve their yields</p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {stories.map((story) => (
+            {stories.map((story: any) => (
               <div key={story._id} className="flex flex-col lg:flex-row bg-crop-gray rounded-2xl overflow-hidden">
                 <div className="lg:w-2/5 h-48 lg:h-auto bg-cover bg-center" style={{ backgroundImage: `url(${story.image})` }} />
                 <div className="flex-1 p-6 flex flex-col justify-center">
@@ -279,7 +133,7 @@ function HomePageContent() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {blogPosts.map((post) => (
+            {posts.map((post: any) => (
               <article key={post._id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                 <Link href={`/blog/${post.slug}`}>
                   <div className="h-48 bg-gray-200 bg-cover bg-center" style={{ backgroundImage: post.featuredImage ? `url(${post.featuredImage})` : undefined }} />

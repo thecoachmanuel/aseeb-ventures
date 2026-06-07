@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 type ResourceName =
   | "services" | "blog" | "contacts" | "testimonials" | "stories" | "subscribers"
   | "users" | "siteconfig" | "navigation" | "locations" | "heroslides"
   | "pillars" | "stats" | "nutrients" | "resources" | "legalpages" | "iwantto"
-  | "testresults";
+  | "testresults" | "products";
 
 interface FormField {
   name: string;
   label: string;
-  type: "text" | "textarea" | "select" | "url";
+  type: "text" | "textarea" | "select" | "url" | "image";
   rows?: number;
   required?: boolean;
   options?: { value: string; label: string }[];
@@ -33,7 +33,7 @@ const formFields: Record<ResourceName, FormField[]> = {
     { name: "description", label: "Full Description", type: "textarea", rows: 4, required: true },
     { name: "price", label: "Price", type: "text" },
     { name: "icon", label: "Icon", type: "text" },
-    { name: "image", label: "Image URL", type: "url" },
+    { name: "image", label: "Image", type: "image" },
   ],
   blog: [
     { name: "title", label: "Title", type: "text", required: true },
@@ -43,7 +43,7 @@ const formFields: Record<ResourceName, FormField[]> = {
     { name: "tags", label: "Tags (comma separated)", type: "text" },
     { name: "excerpt", label: "Excerpt", type: "textarea", rows: 2, required: true },
     { name: "content", label: "Content", type: "textarea", rows: 10, required: true },
-    { name: "featuredImage", label: "Featured Image URL", type: "url" },
+    { name: "featuredImage", label: "Featured Image", type: "image" },
   ],
   stories: [
     { name: "title", label: "Title", type: "text", required: true },
@@ -53,7 +53,7 @@ const formFields: Record<ResourceName, FormField[]> = {
     { name: "crop", label: "Crop", type: "text" },
     { name: "excerpt", label: "Excerpt", type: "textarea", rows: 2, required: true },
     { name: "content", label: "Content", type: "textarea", rows: 10, required: true },
-    { name: "image", label: "Image URL", type: "url", required: true },
+    { name: "image", label: "Image", type: "image", required: true },
     { name: "videoUrl", label: "Video URL", type: "url" },
   ],
   testimonials: [
@@ -62,12 +62,12 @@ const formFields: Record<ResourceName, FormField[]> = {
     { name: "role", label: "Role", type: "text" },
     { name: "quote", label: "Quote", type: "textarea", rows: 3, required: true },
     { name: "rating", label: "Rating (1-5)", type: "text" },
-    { name: "image", label: "Image URL", type: "url" },
+    { name: "image", label: "Image", type: "image" },
   ],
   heroslides: [
     { name: "title", label: "Title", type: "text", required: true },
     { name: "description", label: "Description", type: "textarea", rows: 2, required: true },
-    { name: "image", label: "Image URL", type: "url" },
+    { name: "image", label: "Image", type: "image" },
     { name: "ctaLabel", label: "CTA Label", type: "text", defaultValue: "READ MORE" },
     { name: "ctaHref", label: "CTA Link", type: "text", defaultValue: "#" },
     { name: "order", label: "Order", type: "text", defaultValue: "0" },
@@ -75,7 +75,7 @@ const formFields: Record<ResourceName, FormField[]> = {
   pillars: [
     { name: "title", label: "Title", type: "text", required: true },
     { name: "description", label: "Description", type: "textarea", rows: 2, required: true },
-    { name: "image", label: "Image URL", type: "url" },
+    { name: "image", label: "Image", type: "image" },
     { name: "href", label: "Link", type: "text", required: true },
     { name: "icon", label: "Icon", type: "text" },
     { name: "order", label: "Order", type: "text", defaultValue: "0" },
@@ -135,7 +135,7 @@ const formFields: Record<ResourceName, FormField[]> = {
   ],
   siteconfig: [
     { name: "siteName", label: "Site Name", type: "text", required: true },
-    { name: "logo", label: "Logo Path", type: "text", required: true },
+    { name: "logo", label: "Logo", type: "image", required: true },
     { name: "phone", label: "Phone", type: "text", required: true },
     { name: "email", label: "Email", type: "text", required: true },
     { name: "address", label: "Address", type: "textarea", rows: 2 },
@@ -169,6 +169,24 @@ const formFields: Record<ResourceName, FormField[]> = {
     { name: "cropType", label: "Crop Type", type: "text" },
     { name: "notes", label: "Notes", type: "textarea", rows: 2 },
   ],
+  products: [
+    { name: "name", label: "Product Name", type: "text", required: true },
+    { name: "slug", label: "Slug", type: "text", required: true },
+    { name: "category", label: "Category", type: "select", options: [
+      { value: "agrochemical", label: "Agrochemical" },
+      { value: "equipment", label: "Equipment" },
+      { value: "seed", label: "Seed" },
+      { value: "tool", label: "Tool" },
+      { value: "other", label: "Other" },
+    ]},
+    { name: "shortDescription", label: "Short Description", type: "textarea", rows: 2, required: true },
+    { name: "description", label: "Full Description", type: "textarea", rows: 4, required: true },
+    { name: "price", label: "Price (NGN)", type: "text", required: true },
+    { name: "unit", label: "Unit (e.g. per liter, per bag)", type: "text" },
+    { name: "images", label: "Images (URLs, comma-separated)", type: "text" },
+    { name: "whatsappNumber", label: "WhatsApp Number", type: "text", placeholder: "+2348056165347" },
+    { name: "order", label: "Display Order", type: "text", defaultValue: "0" },
+  ],
 };
 
 interface Props {
@@ -182,6 +200,25 @@ export function AdminContentManager({ resource, title, canCreate = true }: Props
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<any>(null);
   const [showForm, setShowForm] = useState(false);
+  const [uploadingField, setUploadingField] = useState<string | null>(null);
+
+  const handleImageUpload = async (fieldName: string, file: File) => {
+    if (file.size > 5 * 1024 * 1024) { alert("File must be under 5MB"); return; }
+    setUploadingField(fieldName);
+    const fd = new FormData();
+    fd.append("file", file);
+    try {
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      if (res.ok) {
+        const data = await res.json();
+        const input = document.querySelector(`[name="${fieldName}"]`) as HTMLInputElement;
+        if (input) input.value = data.url;
+      } else {
+        alert("Upload failed");
+      }
+    } catch { alert("Upload failed"); }
+    setUploadingField(null);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -263,6 +300,7 @@ export function AdminContentManager({ resource, title, canCreate = true }: Props
     if (resource === "siteconfig") return item.email || "";
     if (resource === "subscribers") return item.createdAt ? `Subscribed ${new Date(item.createdAt).toLocaleDateString()}` : "";
     if (resource === "testresults") return `Status: ${item.status?.replace("_", " ")} • ${item.farmName || ""}`;
+    if (resource === "products") return `₦${item.price} — ${item.category || ""}`;
     return "";
   };
 
@@ -279,7 +317,7 @@ export function AdminContentManager({ resource, title, canCreate = true }: Props
         {canCreate && fields.length > 0 && (
           <button
             onClick={() => { setEditing(null); setShowForm(!showForm); }}
-            className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
+            className="w-full sm:w-auto bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
           >
             {showForm ? "Cancel" : `Add ${addLabel}`}
           </button>
@@ -304,9 +342,26 @@ export function AdminContentManager({ resource, title, canCreate = true }: Props
                   </select>
                 );
               }
+              if (field.type === "image") {
+                const imgUrl = String(displayVal);
+                return (
+                  <div key={field.name}>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>
+                    {imgUrl && (
+                      <img src={imgUrl} alt="" className="w-32 h-32 object-cover rounded-lg border mb-2" />
+                    )}
+                    <input type="file" accept="image/*"
+                      onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(field.name, f); }}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
+                    />
+                    <input key={`url-${field.name}`} name={field.name} type="text" placeholder={field.placeholder || "Or paste image URL"} defaultValue={imgUrl} className={`${inputClass} mt-2`} />
+                    {uploadingField === field.name && <span className="text-xs text-emerald-600 mt-1">Uploading...</span>}
+                  </div>
+                );
+              }
               return <input key={field.name} name={field.name} type="text" placeholder={field.placeholder || field.label} required={field.required} defaultValue={String(displayVal)} className={inputClass} />;
             })}
-            <button type="submit" className="bg-emerald-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors">Save</button>
+            <button type="submit" className="w-full sm:w-auto bg-emerald-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors">Save</button>
           </form>
         </div>
       )}
@@ -331,11 +386,11 @@ export function AdminContentManager({ resource, title, canCreate = true }: Props
                   <h4 className="font-medium text-gray-900 truncate">{getItemTitle(item)}</h4>
                   <p className="text-sm text-gray-500 truncate">{getItemSubtitle(item)}</p>
                 </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
                   {resource !== "contacts" && resource !== "subscribers" && fields.length > 0 && (
-                    <button onClick={() => { setEditing(item); setShowForm(true); }} className="text-sm text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors">Edit</button>
+                    <button onClick={() => { setEditing(item); setShowForm(true); }} className="flex-1 sm:flex-none text-center text-sm text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors">Edit</button>
                   )}
-                  <button onClick={() => handleDelete(item._id)} className="text-sm text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors">Delete</button>
+                  <button onClick={() => handleDelete(item._id)} className="flex-1 sm:flex-none text-center text-sm text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors">Delete</button>
                 </div>
               </div>
             ))}

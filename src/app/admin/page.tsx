@@ -17,7 +17,7 @@ export default function AdminDashboardPage() {
   const router = useRouter();
   const [session, setSession] = useState<{ name: string; role: string } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ services: 0, blogPosts: 0, contacts: 0, testimonials: 0, stories: 0, subscribers: 0 });
+  const [stats, setStats] = useState({ services: 0, blogPosts: 0, contacts: 0, testimonials: 0, stories: 0, subscribers: 0, products: 0 });
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -54,6 +54,7 @@ export default function AdminDashboardPage() {
     { label: "Testimonials", value: stats.testimonials, href: "/admin/testimonials", icon: "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z", color: "text-pink-600 bg-pink-50" },
     { label: "Stories", value: stats.stories, href: "/admin/stories", icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z", color: "text-green-600 bg-green-50" },
     { label: "Subscribers", value: stats.subscribers, href: "/admin/subscribers", icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10", color: "text-cyan-600 bg-cyan-50" },
+    { label: "Products", value: stats.products, href: "/admin/products", icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z", color: "text-orange-600 bg-orange-50" },
   ];
 
   return (
@@ -64,7 +65,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
         {statCards.map((stat) => (
           <Link
             key={stat.label}
